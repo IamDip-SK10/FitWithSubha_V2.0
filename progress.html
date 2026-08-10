@@ -230,26 +230,45 @@ onAuthStateChanged(auth, (user) => {
   let nameTop = document.getElementById("userNameTop");
   let guestNote = document.getElementById("guestNote");
 
+  function renderIfReady(){
+    if(history.length && start && target){
+      document.getElementById("setupBox").style.display = "none";
+      document.getElementById("trackBox").style.display = "block";
+      loadData();
+    }
+    renderExtras();
+  }
+
   if(user){
     nameTop.innerText = `Hi, ${user.email.split("@")[0]} 👋`;
     guestNote.innerHTML = "";
+
+    /* Render immediately from whatever is already in localStorage
+       (e.g. seeded by Body Stats / Fitness Plan) instead of waiting
+       on a Firestore doc that may not exist yet */
+    renderIfReady();
 
     const ref = doc(db, "progress", user.uid);
     onSnapshot(ref, (docSnap) => {
       if(docSnap.exists()){
         let data = docSnap.data();
-        history = data.history || [];
-        start = data.start || 0;
-        target = data.target || 0;
-        streak = data.streak || 0;
-        unit = data.unit || "kg";
+        history = (data.history && data.history.length) ? data.history : history;
+        streak = data.streak || streak;
+        unit = data.unit || unit;
+        start = start || data.start || 0;
+        target = parseFloat(localStorage.getItem("targetWeight")) || data.target || target;
 
-        if(history.length && start && target){
-          document.getElementById("setupBox").style.display = "none";
-          document.getElementById("trackBox").style.display = "block";
-          loadData();
+        /* Keep Firestore in sync if a newer goal was set locally
+           (e.g. Plan page was recalculated) */
+        if(target !== data.target || start !== data.start){
+          setDoc(ref, { history, start, target, streak, unit }).catch(e => console.log(e));
         }
-        renderExtras();
+
+        renderIfReady();
+      } else if(history.length && start && target){
+        /* No Firestore doc yet but we already have local data — save it now
+           so it's actually persisted instead of living only in localStorage */
+        setDoc(ref, { history, start, target, streak, unit }).catch(e => console.log(e));
       }
     });
   } else if(isGuest === "true"){
@@ -260,12 +279,7 @@ onAuthStateChanged(auth, (user) => {
         <span style="color:var(--brand-1);font-weight:600;cursor:pointer;" onclick="window.location.href='login.html'">Login to save progress</span>
       </div>`;
 
-    if(history.length && start && target){
-      document.getElementById("setupBox").style.display = "none";
-      document.getElementById("trackBox").style.display = "block";
-      loadData();
-    }
-    renderExtras();
+    renderIfReady();
   } else {
     window.location.href = "login.html";
   }
