@@ -436,6 +436,12 @@ window.calculatePlan = function calculatePlan(){
 
   localStorage.setItem("targetWeight", targetKG.toFixed(1));
 
+  /* Persist the workout day/duration preference immediately at
+     calculation time — Workouts page shouldn't require the user
+     to click "Save" to pick these up */
+  localStorage.setItem("workoutDays", workoutDays);
+  localStorage.setItem("workoutDuration", workoutDuration);
+
   let history = JSON.parse(localStorage.getItem("weightHistory")) || [];
   if(history.length === 0){
     history = [{ weight: currentKG, date: new Date().toLocaleDateString() }];

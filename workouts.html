@@ -236,6 +236,15 @@ function updateCompletion(){
   const finishBtn = document.getElementById("finishBtn");
   const week = loadWeek();
   const key = new Date().toDateString();
+
+  /* Ticking every exercise IS what completes today's workout —
+     auto-log it the moment completion hits 100%, instead of
+     requiring a separate disconnected button press */
+  if(pct === 100 && !week[key]){
+    logTodayComplete();
+    return; // logTodayComplete() re-runs updateCompletion()
+  }
+
   if(week[key]){
     finishBtn.innerText = "✅ Workout Completed Today";
     finishBtn.disabled = true;
@@ -245,13 +254,14 @@ function updateCompletion(){
   }
 }
 
-window.finishWorkout = function(){
+function logTodayComplete(){
   const week = loadWeek();
   const key = new Date().toDateString();
+  if(week[key]){ updateCompletion(); renderWeek(); return; }
+
   week[key] = true;
   saveWeek(week);
 
-  // streak
   const yesterday = new Date(Date.now() - 86400000).toDateString();
   let streak = parseInt(localStorage.getItem("workoutStreak")) || 0;
   const lastDone = localStorage.getItem("lastWorkoutDate");
@@ -263,6 +273,10 @@ window.finishWorkout = function(){
   toast("Workout logged 💪", "success");
   renderWeek();
   updateCompletion();
+}
+
+window.finishWorkout = function(){
+  logTodayComplete();
 };
 
 function renderWeek(){
@@ -272,6 +286,8 @@ function renderWeek(){
   const now = new Date();
   const startOfWeek = new Date(now);
   startOfWeek.setDate(now.getDate() - now.getDay());
+
+  const targetDays = parseInt(localStorage.getItem("workoutDays")) || 4;
 
   let doneCount = 0;
   grid.innerHTML = "";
@@ -292,16 +308,15 @@ function renderWeek(){
     grid.appendChild(dayEl);
   }
 
-  document.getElementById("weekCount").innerText = `${doneCount}/7`;
+  document.getElementById("weekCount").innerText = `${doneCount}/${targetDays}`;
   document.getElementById("streakVal").innerText = parseInt(localStorage.getItem("workoutStreak")) || 0;
 }
 
 (async () => {
   await requireAuth();
   const data = getLocalData();
-  if(data.savedPlan && data.savedPlan.workoutDays){
-    document.getElementById("dayBadge").innerText = data.savedPlan.workoutDays + " days/wk";
-  }
+  const targetDays = parseInt(localStorage.getItem("workoutDays")) || (data.savedPlan && data.savedPlan.workoutDays) || 4;
+  document.getElementById("dayBadge").innerText = targetDays + " days/wk";
   renderCats();
   renderExercises();
   updateCompletion();
