@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workouts - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.cat-row{display:flex; gap:10px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none;}
+.cat-row::-webkit-scrollbar{display:none;}
+.cat-chip{
+  flex:0 0 auto; padding:9px 16px; border-radius:20px; font-size:12.5px; font-weight:600;
+  border:1px solid var(--border); background:var(--surface); cursor:pointer; transition:.2s;
+}
+.cat-chip.active{background:var(--brand-gradient); color:#fff; border-color:transparent;}
+
+.exercise-item{
+  display:flex; align-items:center; gap:12px;
+  padding:13px 14px; border-radius:14px; border:1px solid var(--border); background:var(--surface);
+}
+.exercise-item + .exercise-item{margin-top:8px;}
+.exercise-item.done{background:rgba(34,197,94,0.06); border-color:rgba(34,197,94,0.3);}
+.ex-check{
+  width:26px;height:26px;border-radius:8px; border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center; cursor:pointer; flex:0 0 26px; color:#fff; font-size:13px;
+}
+.ex-check.done{background:var(--success); border-color:transparent;}
+.ex-name{flex:1; font-size:13.5px; font-weight:600;}
+.ex-name.done{text-decoration:line-through; color:var(--text-faint);}
+.ex-meta{font-size:11.5px; color:var(--text-faint);}
+
+.week-grid{display:flex; justify-content:space-between; margin-top:14px;}
+.week-day{
+  display:flex; flex-direction:column; align-items:center; gap:6px; font-size:10.5px; color:var(--text-faint);
+}
+.week-dot{
+  width:30px;height:30px;border-radius:9px; display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--border); font-size:11px; font-weight:700; color:var(--text-faint);
+}
+.week-dot.done{background:var(--brand-gradient); color:#fff; border-color:transparent;}
+.week-dot.today{border-color:var(--brand-1); color:var(--brand-1);}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link active" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+  </div>
+
+  <main class="page">
+
+    <div class="section-title" style="margin-bottom:14px;">
+      <span><i class="fa-solid fa-dumbbell" style="color:var(--brand-1);"></i>&nbsp; Workouts</span>
+    </div>
+
+    <div class="grid grid-2">
+
+      <!-- TODAY'S WORKOUT -->
+      <div class="card fade-in">
+        <div class="section-title" style="margin-bottom:4px;">
+          <span>Today's Workout</span>
+          <span class="badge badge-info" id="dayBadge">4 days/wk</span>
+        </div>
+        <div class="muted" style="font-size:12px; margin-bottom:14px;" id="focusLine">Loading plan…</div>
+
+        <div class="cat-row" id="catRow"></div>
+
+        <div class="mt-16" id="exerciseList"></div>
+
+        <div class="mt-16">
+          <div class="flex justify-between" style="font-size:11.5px;">
+            <span class="muted">Completion</span>
+            <span id="completionPct" style="font-weight:700;">0%</span>
+          </div>
+          <div class="progress-track mt-8"><div class="progress-fill" id="completionFill" style="width:0%;"></div></div>
+        </div>
+
+        <button class="btn btn-primary btn-block mt-16" id="finishBtn" onclick="finishWorkout()">Mark Workout Complete</button>
+      </div>
+
+      <!-- WEEKLY CONSISTENCY -->
+      <div class="card fade-in">
+        <div class="section-title" style="margin-bottom:8px;"><span>Weekly Consistency</span></div>
+        <div class="week-grid" id="weekGrid"></div>
+
+        <div class="grid grid-2 mt-24" style="gap:10px;">
+          <div class="stat-card">
+            <div class="stat-label"><i class="fa-solid fa-fire"></i> Streak</div>
+            <div class="stat-value" id="streakVal">0</div>
+            <div class="stat-sub">days in a row</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="fa-solid fa-calendar-check"></i> This Week</div>
+            <div class="stat-value" id="weekCount">0/7</div>
+            <div class="stat-sub">workouts done</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link active" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script>
+function soon(e){
+  e.preventDefault();
+  toast("This section is arriving in the next update ✨", "info");
+  return false;
+}
+</script>
+
+<script type="module">
+import { requireAuth, getLocalData, toast } from "./assets/fitcore.js";
+window.toast = toast;
+
+const LIBRARY = {
+  Strength: [
+    { name: "Squats", meta: "4 sets × 12 reps" },
+    { name: "Push-ups", meta: "3 sets × 15 reps" },
+    { name: "Bent-over rows", meta: "4 sets × 10 reps" },
+    { name: "Plank", meta: "3 sets × 45 sec" }
+  ],
+  Cardio: [
+    { name: "Brisk walk / jog", meta: "20 minutes" },
+    { name: "Jumping jacks", meta: "3 sets × 30 sec" },
+    { name: "Mountain climbers", meta: "3 sets × 30 sec" }
+  ],
+  Flexibility: [
+    { name: "Hamstring stretch", meta: "2 min / side" },
+    { name: "Cat-cow stretch", meta: "10 reps" },
+    { name: "Shoulder rolls", meta: "2 min" }
+  ]
+};
+
+const todayKey = "workout_" + new Date().toDateString();
+const weekKey = "workoutWeek";
+
+function loadToday(){
+  try{ return JSON.parse(localStorage.getItem(todayKey)) || { cat: "Strength", done: {} }; }
+  catch(e){ return { cat: "Strength", done: {} }; }
+}
+function saveToday(t){ localStorage.setItem(todayKey, JSON.stringify(t)); }
+
+function loadWeek(){
+  try{ return JSON.parse(localStorage.getItem(weekKey)) || {}; }
+  catch(e){ return {}; }
+}
+function saveWeek(w){ localStorage.setItem(weekKey, JSON.stringify(w)); }
+
+let today = loadToday();
+
+function renderCats(){
+  const row = document.getElementById("catRow");
+  row.innerHTML = Object.keys(LIBRARY).map(cat => `
+    <div class="cat-chip ${cat === today.cat ? "active" : ""}" data-cat="${cat}">${cat}</div>
+  `).join("");
+  row.querySelectorAll(".cat-chip").forEach(chip => {
+    chip.onclick = () => {
+      today.cat = chip.dataset.cat;
+      today.done = {};
+      saveToday(today);
+      renderCats();
+      renderExercises();
+    };
+  });
+}
+
+function renderExercises(){
+  const list = document.getElementById("exerciseList");
+  const exs = LIBRARY[today.cat];
+  list.innerHTML = exs.map((ex,i) => {
+    const isDone = !!today.done[i];
+    return `
+    <div class="exercise-item ${isDone ? "done" : ""}">
+      <div class="ex-check ${isDone ? "done" : ""}" data-i="${i}"><i class="fa-solid fa-check" style="${isDone ? "" : "opacity:0"}"></i></div>
+      <div style="flex:1;">
+        <div class="ex-name ${isDone ? "done" : ""}">${ex.name}</div>
+        <div class="ex-meta">${ex.meta}</div>
+      </div>
+    </div>`;
+  }).join("");
+
+  list.querySelectorAll(".ex-check").forEach(el => {
+    el.onclick = () => {
+      const i = el.dataset.i;
+      today.done[i] = !today.done[i];
+      saveToday(today);
+      renderExercises();
+      updateCompletion();
+    };
+  });
+
+  document.getElementById("focusLine").innerText = `${today.cat} focus · ${exs.length} exercises`;
+}
+
+function updateCompletion(){
+  const exs = LIBRARY[today.cat];
+  const doneCount = Object.values(today.done).filter(Boolean).length;
+  const pct = exs.length ? Math.round((doneCount/exs.length)*100) : 0;
+  document.getElementById("completionPct").innerText = pct + "%";
+  document.getElementById("completionFill").style.width = pct + "%";
+
+  const finishBtn = document.getElementById("finishBtn");
+  const week = loadWeek();
+  const key = new Date().toDateString();
+  if(week[key]){
+    finishBtn.innerText = "✅ Workout Completed Today";
+    finishBtn.disabled = true;
+  } else {
+    finishBtn.innerText = "Mark Workout Complete";
+    finishBtn.disabled = false;
+  }
+}
+
+window.finishWorkout = function(){
+  const week = loadWeek();
+  const key = new Date().toDateString();
+  week[key] = true;
+  saveWeek(week);
+
+  // streak
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  let streak = parseInt(localStorage.getItem("workoutStreak")) || 0;
+  const lastDone = localStorage.getItem("lastWorkoutDate");
+  if(lastDone === yesterday) streak += 1;
+  else if(lastDone !== key) streak = 1;
+  localStorage.setItem("workoutStreak", streak);
+  localStorage.setItem("lastWorkoutDate", key);
+
+  toast("Workout logged 💪", "success");
+  renderWeek();
+  updateCompletion();
+};
+
+function renderWeek(){
+  const week = loadWeek();
+  const grid = document.getElementById("weekGrid");
+  const labels = ["S","M","T","W","T","F","S"];
+  const now = new Date();
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+
+  let doneCount = 0;
+  grid.innerHTML = "";
+  for(let i=0;i<7;i++){
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    const key = d.toDateString();
+    const isDone = !!week[key];
+    const isToday = key === now.toDateString();
+    if(isDone) doneCount++;
+    const dayEl = document.createElement("div");
+    dayEl.className = "week-day";
+    dayEl.innerHTML = `
+      <div class="week-dot ${isDone ? "done" : ""} ${isToday && !isDone ? "today" : ""}">
+        ${isDone ? '<i class="fa-solid fa-check"></i>' : d.getDate()}
+      </div>
+      <span>${labels[i]}</span>`;
+    grid.appendChild(dayEl);
+  }
+
+  document.getElementById("weekCount").innerText = `${doneCount}/7`;
+  document.getElementById("streakVal").innerText = parseInt(localStorage.getItem("workoutStreak")) || 0;
+}
+
+(async () => {
+  await requireAuth();
+  const data = getLocalData();
+  if(data.savedPlan && data.savedPlan.workoutDays){
+    document.getElementById("dayBadge").innerText = data.savedPlan.workoutDays + " days/wk";
+  }
+  renderCats();
+  renderExercises();
+  updateCompletion();
+  renderWeek();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+html,body{overflow-x:hidden;}
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#f3f0ff,#eef6ff);
+  position:relative;
+  padding:24px 18px;
+  overflow-y:auto;
+}
+
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.o1{width:260px;height:260px;background:#6a11cb;opacity:.22;top:-90px;left:-90px;}
+.o2{width:260px;height:260px;background:#2575fc;opacity:.22;bottom:-90px;right:-90px;}
+
+.auth-wrap{width:100%; max-width:380px; position:relative; z-index:2;}
+
+.logo-row{display:flex; justify-content:center; margin-bottom:20px;}
+.logo-box{
+  background:rgba(255,255,255,0.95); padding:14px; border-radius:22px;
+  box-shadow:var(--shadow-lg), 0 0 35px rgba(106,17,203,0.2);
+}
+.logo-box img{height:56px;width:56px;border-radius:12px;}
+
+.auth-card{
+  background:var(--surface); border-radius:26px; padding:30px 26px;
+  box-shadow:var(--shadow-lg), 0 8px 20px rgba(106,17,203,0.12);
+  animation:fadeIn .5s ease;
+}
+
+.auth-title{font-size:20px; font-weight:700; text-align:center;}
+.auth-sub{font-size:12.5px; color:var(--text-muted); text-align:center; margin-top:4px; margin-bottom:22px;}
+
+.field{position:relative; margin-bottom:16px; text-align:left;}
+.field input{
+  width:100%; padding:17px 14px 8px 14px; border-radius:14px;
+  border:1px solid var(--border); background:#fff;
+  font-size:14px; font-family:inherit; transition:.2s;
+}
+.field input:focus{
+  outline:none; border-color:var(--brand-1);
+  box-shadow:0 0 0 4px rgba(106,17,203,0.12);
+}
+.field label{
+  position:absolute; left:14px; top:14px; font-size:13px;
+  color:var(--text-faint); transition:.2s; pointer-events:none;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label{
+  top:5px; font-size:10.5px; color:var(--brand-1); font-weight:600;
+}
+
+.input-error{border-color:var(--danger) !important; box-shadow:0 0 0 3px rgba(239,68,68,0.12) !important;}
+.input-success{border-color:var(--success) !important;}
+.error-text{font-size:11.5px; color:var(--danger); margin-top:5px;}
+
+.pw-hint{font-size:11px; color:var(--text-faint); margin-top:-10px; margin-bottom:16px;}
+
+.auth-btn{
+  width:100%; padding:14px; border:none; border-radius:30px;
+  background:var(--brand-gradient); color:#fff;
+  font-weight:600; font-size:14.5px; cursor:pointer;
+  box-shadow:var(--shadow-brand); transition:.2s; position:relative;
+}
+.auth-btn:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(106,17,203,0.32);}
+.auth-btn:active{transform:scale(.97);}
+.auth-btn[disabled]{opacity:.75; pointer-events:none;}
+.auth-btn.loading span{visibility:hidden;}
+.auth-btn.loading::before{
+  content:""; position:absolute; left:50%; top:50%; width:18px; height:18px;
+  margin:-9px 0 0 -9px; border:3px solid rgba(255,255,255,0.6); border-top:3px solid #fff;
+  border-radius:50%; animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.msg{margin-top:14px; font-size:12.5px; text-align:center;}
+.msg.success{color:var(--success);}
+.msg.error{color:var(--danger);}
+
+.login-box{margin-top:16px; text-align:center; font-size:13px; color:var(--text-muted);}
+.login-box span{color:var(--brand-1); font-weight:600; cursor:pointer;}
+.login-box span:hover{text-decoration:underline;}
+</style>
+</head>
+
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<div class="auth-wrap">
+
+  <div class="logo-row">
+    <div class="logo-box"><img src="bmilogo.png" onerror="this.style.display='none'"></div>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-title">Create your account 🚀</div>
+    <div class="auth-sub">Start your personalized fitness journey today</div>
+
+    <div class="field">
+      <input type="email" id="email" placeholder=" ">
+      <label>Email</label>
+      <div id="emailError" class="error-text"></div>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" placeholder=" ">
+      <label>Password</label>
+      <div id="passError" class="error-text"></div>
+    </div>
+    <div class="pw-hint">Minimum 6 characters</div>
+
+    <div class="field">
+      <input type="password" id="confirm" placeholder=" ">
+      <label>Confirm Password</label>
+      <div id="confirmError" class="error-text"></div>
+    </div>
+
+    <button class="auth-btn" id="signupBtn" onclick="signup()"><span>Create Account</span></button>
+
+    <div id="successMsg" class="msg"></div>
+  </div>
+
+  <div class="login-box">
+    Already have an account? <span onclick="window.location.href='login.html'">Login</span>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBZIjOvVaHMrl8iDt9u5XqBZx8u9Kw0Mqk",
+  authDomain: "fitwithsubha.firebaseapp.com",
+  projectId: "fitwithsubha",
+  storageBucket: "fitwithsubha.firebasestorage.app",
+  messagingSenderId: "783014767318",
+  appId: "1:783014767318:web:667a91a7f39936c60c7777"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const emailEl = document.getElementById("email");
+const passEl = document.getElementById("password");
+const confirmEl = document.getElementById("confirm");
+const btn = document.getElementById("signupBtn");
+
+function checkPassword(){
+  confirmEl.classList.remove("input-error","input-success");
+  if(confirmEl.value === "") return;
+  if(passEl.value === confirmEl.value){
+    confirmEl.classList.add("input-success");
+    document.getElementById("confirmError").innerText = "";
+  } else {
+    confirmEl.classList.add("input-error");
+    document.getElementById("confirmError").innerText = "Passwords do not match";
+  }
+}
+passEl.addEventListener("input", checkPassword);
+confirmEl.addEventListener("input", checkPassword);
+
+function clearErrors(){
+  ["emailError","passError","confirmError"].forEach(id => {
+    document.getElementById(id).innerText = "";
+  });
+  ["email","password","confirm"].forEach(id => {
+    document.getElementById(id).classList.remove("input-error");
+  });
+}
+
+window.signup = async function(){
+  clearErrors();
+
+  let email = emailEl.value.trim();
+  let pass = passEl.value;
+  let confirm = confirmEl.value;
+
+  if(!email){
+    emailEl.classList.add("input-error");
+    document.getElementById("emailError").innerText = "Enter email";
+    return;
+  }
+  if(!pass){
+    passEl.classList.add("input-error");
+    document.getElementById("passError").innerText = "Enter password";
+    return;
+  }
+  if(pass.length < 6){
+    passEl.classList.add("input-error");
+    document.getElementById("passError").innerText = "Password must be 6+ characters";
+    return;
+  }
+  if(pass !== confirm){
+    confirmEl.classList.add("input-error");
+    document.getElementById("confirmError").innerText = "Passwords do not match";
+    return;
+  }
+
+  btn.classList.add("loading");
+  btn.disabled = true;
+
+  try{
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: new Date().toISOString()
+    });
+
+    await sendEmailVerification(user);
+    await signOut(auth);
+
+    document.getElementById("successMsg").innerHTML =
+      "<div class='msg success'>✅ Account created! Please verify your email before login.</div>";
+
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 2000);
+
+  } catch(e){
+    if(e.code === "auth/email-already-in-use"){
+      emailEl.classList.add("input-error");
+      document.getElementById("emailError").innerText = "Email already registered";
+    } else if(e.code === "auth/invalid-email"){
+      emailEl.classList.add("input-error");
+      document.getElementById("emailError").innerText = "Invalid email format";
+    } else {
+      document.getElementById("successMsg").innerHTML = "<div class='msg error'>❌ Something went wrong</div>";
+      console.log(e);
+    }
+    btn.classList.remove("loading");
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>

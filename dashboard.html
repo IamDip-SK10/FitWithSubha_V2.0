@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+/* Page-specific styles */
+.hero{
+  background:var(--brand-gradient);
+  border-radius:var(--radius-xl);
+  padding:24px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow-brand);
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  width:220px;height:220px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.12);
+  top:-80px; right:-60px;
+}
+.hero .greet{font-size:19px; font-weight:700; position:relative;}
+.hero .sub{font-size:12.5px; opacity:.9; margin-top:4px; position:relative;}
+.hero .ring-wrap{
+  display:flex; align-items:center; gap:16px;
+  margin-top:18px; position:relative;
+}
+.ring{
+  width:76px;height:76px;border-radius:50%;
+  background:conic-gradient(#fff calc(var(--pct,0)*1%), rgba(255,255,255,0.25) 0);
+  display:flex;align-items:center;justify-content:center;
+  flex:0 0 76px;
+}
+.ring-inner{
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;
+}
+.hero-stat-label{font-size:11px; opacity:.85;}
+.hero-stat-value{font-size:15px; font-weight:700; margin-top:2px;}
+
+.quick-actions{
+  display:flex; gap:10px; overflow-x:auto; padding-bottom:4px;
+  scrollbar-width:none;
+}
+.quick-actions::-webkit-scrollbar{display:none;}
+.qa-btn{
+  flex:0 0 auto;
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  padding:14px 16px;
+  border-radius:16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  min-width:84px;
+  font-size:11.5px; font-weight:600; color:var(--text);
+  cursor:pointer;
+  transition:.2s;
+}
+.qa-btn:hover{transform:translateY(-2px); box-shadow:var(--shadow-sm);}
+.qa-btn i{
+  width:38px;height:38px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(106,17,203,0.12),rgba(37,117,252,0.12));
+  color:var(--brand-1);
+  font-size:15px;
+}
+
+.overview-row{
+  display:flex; align-items:center; gap:12px;
+  padding:13px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+}
+.overview-row + .overview-row{margin-top:10px;}
+.overview-icon{
+  width:38px;height:38px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px; flex:0 0 38px;
+}
+.coming-soon{opacity:.5; cursor:not-allowed;}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <!-- Desktop sidebar -->
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link active" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <!-- Mobile top bar -->
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+  </div>
+
+  <main class="page">
+
+    <!-- HERO -->
+    <section class="hero fade-in" id="heroSection">
+      <div class="greet" id="greetText">Loading…</div>
+      <div class="sub" id="greetSub">Fetching your fitness snapshot</div>
+
+      <div class="ring-wrap">
+        <div class="ring" id="progressRing" style="--pct:0">
+          <div class="ring-inner" id="progressRingText">0%</div>
+        </div>
+        <div style="flex:1; display:flex; justify-content:space-between; gap:8px;">
+          <div>
+            <div class="hero-stat-label">Current</div>
+            <div class="hero-stat-value" id="heroCurrent">—</div>
+          </div>
+          <div>
+            <div class="hero-stat-label">Target</div>
+            <div class="hero-stat-value" id="heroTarget">—</div>
+          </div>
+          <div>
+            <div class="hero-stat-label">Streak</div>
+            <div class="hero-stat-value" id="heroStreak">0 🔥</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK ACTIONS -->
+    <section class="mt-24">
+      <div class="section-title">Quick Actions</div>
+      <div class="quick-actions">
+        <a class="qa-btn" href="bodystat.html"><i class="fa-solid fa-calculator"></i>Recalc BMI</a>
+        <a class="qa-btn" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>My Plan</a>
+        <a class="qa-btn" href="progress.html"><i class="fa-solid fa-weight-scale"></i>Log Weight</a>
+        <a class="qa-btn" href="myjourney.html"><i class="fa-solid fa-fire"></i>My Journey</a>
+        <a class="qa-btn" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+      </div>
+    </section>
+
+    <!-- STAT GRID -->
+    <section class="mt-24">
+      <div class="section-title">Body & Goals</div>
+      <div class="grid grid-4" id="statGrid">
+        <div class="stat-card"><div class="stat-label skeleton" style="width:60%;height:11px;"></div><div class="stat-value skeleton mt-8" style="width:50%;height:22px;"></div></div>
+        <div class="stat-card"><div class="stat-label skeleton" style="width:60%;height:11px;"></div><div class="stat-value skeleton mt-8" style="width:50%;height:22px;"></div></div>
+        <div class="stat-card"><div class="stat-label skeleton" style="width:60%;height:11px;"></div><div class="stat-value skeleton mt-8" style="width:50%;height:22px;"></div></div>
+        <div class="stat-card"><div class="stat-label skeleton" style="width:60%;height:11px;"></div><div class="stat-value skeleton mt-8" style="width:50%;height:22px;"></div></div>
+      </div>
+    </section>
+
+    <!-- TODAY'S OVERVIEW -->
+    <section class="mt-24">
+      <div class="section-title">Today's Overview</div>
+      <div class="card" id="overviewCard">
+        <div class="overview-row">
+          <div class="overview-icon skeleton"></div>
+          <div style="flex:1;">
+            <div class="skeleton" style="width:40%;height:12px;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RECENT ACTIVITY -->
+    <section class="mt-24">
+      <div class="section-title">Recent Activity</div>
+      <div class="card" id="recentActivityCard">
+        <div class="empty-state">
+          <i class="fa-solid fa-hourglass-half"></i>
+          <div class="empty-title">Loading recent activity…</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Mobile bottom nav -->
+<nav class="bottomnav">
+  <a class="bottomnav-link active" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script>
+function soon(e){
+  e.preventDefault();
+  toast("This section is arriving in the next update ✨", "info");
+  return false;
+}
+</script>
+
+<script type="module">
+import {
+  requireAuth, getLocalData, bmiCategory, progressPercent,
+  greetingWord, displayName, getRecentEntries, toast
+} from "./assets/fitcore.js";
+
+(async () => {
+  const { user, isGuest } = await requireAuth();
+  const data = getLocalData();
+  const name = displayName(user, isGuest);
+
+  // HERO
+  document.getElementById("greetText").innerText = `${greetingWord()}, ${name} 👋`;
+  document.getElementById("greetSub").innerText = data.weight
+    ? "Here's where your progress stands today."
+    : "Let's capture your body stats to unlock your dashboard.";
+
+  const unit = "kg";
+  document.getElementById("heroCurrent").innerText = data.weight ? `${Math.round(data.weight)} kg` : "—";
+  document.getElementById("heroTarget").innerText = data.targetWeight ? `${Math.round(data.targetWeight)} kg` : "—";
+  document.getElementById("heroStreak").innerText = `${data.streak} 🔥`;
+
+  const pct = progressPercent(data);
+  document.getElementById("progressRing").style.setProperty("--pct", pct);
+  document.getElementById("progressRingText").innerText = pct + "%";
+
+  // STAT GRID
+  const cat = bmiCategory(data.bmi);
+  const statGrid = document.getElementById("statGrid");
+  const targetCalories = data.calories ? Math.round(data.calories * 0.85) : null; // mild deficit/surplus guidance
+
+  statGrid.innerHTML = `
+    <div class="stat-card fade-in">
+      <div class="stat-label"><i class="fa-solid fa-weight-scale"></i> BMI</div>
+      <div class="stat-value" style="color:${cat.color}">${data.bmi ?? "—"}</div>
+      <div class="stat-sub">${cat.label}</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-label"><i class="fa-solid fa-fire"></i> Daily Calories</div>
+      <div class="stat-value">${data.calories ?? "—"}</div>
+      <div class="stat-sub">Maintenance (kcal/day)</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-label"><i class="fa-solid fa-bullseye"></i> Target Calories</div>
+      <div class="stat-value">${targetCalories ?? "—"}</div>
+      <div class="stat-sub">${data.calories ? "Based on your goal" : "Complete Body Stats first"}</div>
+    </div>
+    <div class="stat-card fade-in">
+      <div class="stat-label"><i class="fa-solid fa-chart-line"></i> Progress</div>
+      <div class="stat-value">${pct}%</div>
+      <div class="stat-sub">${data.targetWeight ? "toward your target" : "Set a target in Progress"}</div>
+    </div>
+  `;
+
+  // TODAY'S OVERVIEW
+  const overview = document.getElementById("overviewCard");
+  if (!data.weight) {
+    overview.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-ruler-vertical"></i>
+        <div class="empty-title">No body stats yet</div>
+        <div class="empty-sub">Calculate your BMI &amp; calories to unlock your daily overview.</div>
+        <a class="btn btn-primary btn-sm mt-16" href="bodystat.html">Get Started</a>
+      </div>`;
+  } else {
+    const today = new Date().toDateString();
+    const checkedInToday = data.lastEntryDate === today;
+    const hasPlan = !!data.savedPlan;
+    overview.innerHTML = `
+      <div class="overview-row">
+        <div class="overview-icon" style="background:rgba(37,117,252,0.12);color:#2575fc;"><i class="fa-solid fa-clipboard-list"></i></div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:600;">Fitness Plan</div>
+          <div class="faint" style="font-size:12px;">${hasPlan ? "Plan generated and ready" : "No plan generated yet"}</div>
+        </div>
+        <span class="badge ${hasPlan ? "badge-success" : "badge-neutral"}">${hasPlan ? "Ready" : "Pending"}</span>
+      </div>
+      <div class="overview-row">
+        <div class="overview-icon" style="background:rgba(34,197,94,0.12);color:#16a34a;"><i class="fa-solid fa-weight-scale"></i></div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:600;">Weight Check-in</div>
+          <div class="faint" style="font-size:12px;">${checkedInToday ? "Logged today" : "Not logged today"}</div>
+        </div>
+        <span class="badge ${checkedInToday ? "badge-success" : "badge-warning"}">${checkedInToday ? "Done" : "Due"}</span>
+      </div>
+      <div class="overview-row">
+        <div class="overview-icon" style="background:rgba(106,17,203,0.12);color:#6a11cb;"><i class="fa-solid fa-fire"></i></div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:600;">Current Streak</div>
+          <div class="faint" style="font-size:12px;">Keep logging daily to grow it</div>
+        </div>
+        <span class="badge badge-info">${data.streak} days</span>
+      </div>
+    `;
+  }
+
+  // RECENT ACTIVITY (Firestore)
+  const activityCard = document.getElementById("recentActivityCard");
+  if (!user) {
+    activityCard.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-user-lock"></i>
+        <div class="empty-title">Guest mode</div>
+        <div class="empty-sub">Log in to sync activity across your devices.</div>
+      </div>`;
+  } else {
+    const entries = await getRecentEntries(user, 5);
+    if (!entries.length) {
+      activityCard.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <div class="empty-title">No activity yet</div>
+          <div class="empty-sub">Your recent BMI checks and plan updates will show up here.</div>
+        </div>`;
+    } else {
+      activityCard.innerHTML = entries.map(e => {
+        const d = new Date(e.date);
+        const dateStr = isNaN(d) ? "" : d.toLocaleDateString(undefined,{month:"short",day:"numeric"});
+        return `
+        <div class="overview-row">
+          <div class="overview-icon" style="background:rgba(37,117,252,0.12);color:#2575fc;"><i class="fa-solid fa-calculator"></i></div>
+          <div style="flex:1;">
+            <div style="font-size:13.5px;font-weight:600;">BMI ${e.bmi ?? "—"} · ${e.calories ?? "—"} kcal</div>
+            <div class="faint" style="font-size:12px;">${dateStr}</div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+  }
+})();
+</script>
+
+</body>
+</html>

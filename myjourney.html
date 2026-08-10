@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Journey - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.top-img{
+  width:100%; border-radius:22px; margin-bottom:18px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.2), 0 0 40px rgba(106,17,203,0.2);
+  transition:.3s;
+}
+.top-img:hover{transform:scale(1.01);}
+
+.story-title{
+  text-align:center; font-size:24px; font-weight:700; margin-bottom:6px;
+  background:var(--brand-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.story-subtitle{text-align:center; font-size:13.5px; color:var(--text-muted); margin-bottom:14px;}
+
+.stats-pill{
+  display:flex; justify-content:center; margin-bottom:20px;
+}
+.stats-pill span{
+  padding:8px 18px; border-radius:30px; background:var(--surface-alt);
+  font-size:13px; font-weight:600; border:1px solid var(--border);
+}
+
+.timeline{position:relative; padding-left:18px;}
+.timeline::before{
+  content:""; position:absolute; left:5px; top:6px; bottom:6px; width:2px;
+  background:linear-gradient(180deg,var(--brand-1),var(--brand-2));
+  opacity:.35;
+}
+.t-card{position:relative; margin-bottom:14px;}
+.t-dot{
+  position:absolute; left:-18px; top:6px; width:10px; height:10px; border-radius:50%;
+  background:var(--brand-gradient);
+}
+.t-card .card{
+  background:linear-gradient(135deg,#f5f7ff,#eef2ff);
+  border:1px solid rgba(106,17,203,0.08);
+  font-size:13.5px; line-height:1.65;
+}
+.highlight{color:var(--brand-1); font-weight:700;}
+
+.final-line{
+  text-align:center; font-size:13.5px; font-weight:600; color:var(--brand-1);
+  margin-top:10px; line-height:1.6;
+}
+
+.contact-box{
+  margin-top:26px; padding:22px; border-radius:20px; text-align:center;
+  background:linear-gradient(135deg,#f3f0ff,#eef2ff); border:1px solid rgba(106,17,203,0.15);
+}
+.contact-title{
+  font-weight:700; font-size:16px; margin-bottom:6px;
+  background:var(--brand-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.contact-text{font-size:13px; color:var(--text-muted); margin-bottom:14px;}
+.insta-btn{
+  padding:14px 30px; border-radius:30px; font-size:14.5px; font-weight:600;
+  background:linear-gradient(135deg,#ff416c,#833AB4); color:#fff; border:none; cursor:pointer;
+  box-shadow:0 10px 25px rgba(255,65,108,0.3); transition:.25s;
+}
+.insta-btn:hover{transform:translateY(-2px); box-shadow:0 15px 32px rgba(255,65,108,0.4);}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link active" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+  </div>
+
+  <main class="page" style="max-width:600px;">
+
+    <div class="card fade-in">
+      <img src="fitness.png" class="top-img" onerror="this.style.display='none'">
+
+      <div class="story-title">My Transformation Journey 🔥</div>
+      <div class="story-subtitle">Hi, this is Subhadip — the creator of this page, here to help you track and improve your fitness journey.</div>
+
+      <div class="stats-pill"><span>From <b>116 kg → 85 kg</b> · 31 kg lost in 1 year</span></div>
+
+      <div class="timeline">
+        <div class="t-card"><div class="t-dot"></div><div class="card">I didn't wake up one day and become fit. I was <span class="highlight">116 kg</span>, struggling with consistency, motivation, and self-control. Many times I almost quit.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">One day I realized — if I don't change now, I never will. That moment hit me hard.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">So I made one decision — <span class="highlight">just don't stop.</span> No shortcuts. No excuses. Just showing up every single day.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">I trained <span class="highlight">6–7 days every week</span>. Even on days I didn't feel like it — I still showed up.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">I cut off <span class="highlight">junk food, fast food, and outside food</span>. For 1 year — only home-cooked meals. No cheating.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">I tracked my <span class="highlight">calories every single day</span>. Not sometimes — every single day.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">And slowly — discipline replaced motivation. That's what changed everything.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">After 1 year — I reached <span class="highlight">85 kg</span>. Not perfect. But stronger. More confident. More in control.</div></div>
+        <div class="t-card"><div class="t-dot"></div><div class="card">💬 If you think it's hard — <span class="highlight">I thought the same.</span><br>But trust me — consistency beats everything.<br><br>And if I can do it — <span class="highlight">you can too.</span> 🔥</div></div>
+      </div>
+
+      <p class="final-line">I didn't change in a day…<br>I changed when "I'll do it tomorrow" became today. 🔥</p>
+
+      <div class="contact-box">
+        <div class="contact-title">📩 Need Guidance?</div>
+        <p class="contact-text">If you're serious about transforming your body, DM me now. Limited guidance slots available 💪</p>
+        <button class="insta-btn" onclick="window.open('https://instagram.com/i_am_dip_07','_blank')">📷 Message Me on Instagram</button>
+      </div>
+
+      <div class="footer" style="text-align:center; font-size:11.5px; color:var(--text-faint); margin-top:18px;">© FitWithSubha — Subhadip</div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link active" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script type="module">
+import { requireAuth, doSignOut } from "./assets/fitcore.js";
+window.doSignOut = doSignOut;
+requireAuth();
+</script>
+
+</body>
+</html>

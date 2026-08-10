@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+html,body{overflow-x:hidden;}
+body{
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#f3f0ff,#eef6ff);
+  position:relative;
+  padding:24px 18px;
+  overflow-y:auto;
+}
+
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.o1{width:260px;height:260px;background:#6a11cb;opacity:.22;top:-90px;left:-90px;}
+.o2{width:260px;height:260px;background:#2575fc;opacity:.22;bottom:-90px;right:-90px;}
+
+.auth-wrap{
+  width:100%;
+  max-width:380px;
+  position:relative;
+  z-index:2;
+}
+
+.logo-row{
+  display:flex;
+  justify-content:center;
+  margin-bottom:20px;
+}
+.logo-box{
+  background:rgba(255,255,255,0.95);
+  padding:14px;
+  border-radius:22px;
+  box-shadow:var(--shadow-lg), 0 0 35px rgba(106,17,203,0.2);
+}
+.logo-box img{height:56px;width:56px;border-radius:12px;}
+
+.auth-card{
+  background:var(--surface);
+  border-radius:26px;
+  padding:30px 26px;
+  box-shadow:var(--shadow-lg), 0 8px 20px rgba(106,17,203,0.12);
+  animation:fadeIn .5s ease;
+}
+
+.auth-title{font-size:20px; font-weight:700; text-align:center;}
+.auth-sub{font-size:12.5px; color:var(--text-muted); text-align:center; margin-top:4px; margin-bottom:22px;}
+
+.field{position:relative; margin-bottom:16px; text-align:left;}
+.field input{
+  width:100%;
+  padding:17px 40px 8px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  font-size:14px;
+  font-family:inherit;
+  transition:.2s;
+}
+.field input:focus{
+  outline:none;
+  border-color:var(--brand-1);
+  box-shadow:0 0 0 4px rgba(106,17,203,0.12);
+}
+.field label{
+  position:absolute;
+  left:14px; top:14px;
+  font-size:13px;
+  color:var(--text-faint);
+  transition:.2s;
+  pointer-events:none;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label{
+  top:5px; font-size:10.5px; color:var(--brand-1); font-weight:600;
+}
+.field-icon{
+  position:absolute; right:14px; top:50%; transform:translateY(-50%);
+  color:var(--text-faint); cursor:pointer; font-size:14px;
+}
+.field-icon:hover{color:var(--brand-1);}
+
+.input-error{border-color:var(--danger) !important; box-shadow:0 0 0 3px rgba(239,68,68,0.12) !important;}
+.error-text{font-size:11.5px; color:var(--danger); margin-top:5px;}
+
+.auth-btn{
+  width:100%; padding:14px; border:none; border-radius:30px;
+  background:var(--brand-gradient); color:#fff;
+  font-weight:600; font-size:14.5px; cursor:pointer;
+  box-shadow:var(--shadow-brand);
+  transition:.2s;
+  position:relative;
+  margin-top:4px;
+}
+.auth-btn:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(106,17,203,0.32);}
+.auth-btn:active{transform:scale(.97);}
+.auth-btn[disabled]{opacity:.75; pointer-events:none;}
+.auth-btn.loading span{visibility:hidden;}
+.auth-btn.loading::before{
+  content:""; position:absolute; left:50%; top:50%; width:18px; height:18px;
+  margin:-9px 0 0 -9px;
+  border:3px solid rgba(255,255,255,0.6); border-top:3px solid #fff;
+  border-radius:50%; animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.divider{
+  display:flex; align-items:center; gap:10px;
+  margin:16px 0; font-size:11px; color:var(--text-faint);
+}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+
+.guest-btn{
+  width:100%; padding:13px; border-radius:30px;
+  background:var(--surface-alt); border:1px solid var(--border);
+  color:var(--text); font-weight:600; font-size:13.5px; cursor:pointer;
+  transition:.2s;
+}
+.guest-btn:hover{background:#e9edf5;}
+
+.forgot-link{
+  text-align:center; margin-top:16px; font-size:12.5px;
+  color:var(--brand-1); cursor:pointer; font-weight:500;
+}
+.forgot-link:hover{text-decoration:underline;}
+
+.msg{margin-top:14px; font-size:12.5px; text-align:center;}
+.msg.success{color:var(--success);}
+.msg.error{color:var(--danger);}
+
+.signup-box{
+  margin-top:16px; text-align:center; font-size:13px; color:var(--text-muted);
+}
+.signup-box span{color:var(--brand-1); font-weight:600; cursor:pointer;}
+.signup-box span:hover{text-decoration:underline;}
+</style>
+</head>
+
+<body>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<div class="auth-wrap">
+
+  <div class="logo-row">
+    <div class="logo-box"><img src="bmilogo.png" onerror="this.style.display='none'"></div>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-title">Welcome back 👋</div>
+    <div class="auth-sub">Log in to continue your fitness journey</div>
+
+    <div class="field">
+      <input type="email" id="email" placeholder=" ">
+      <label>Email</label>
+      <div id="emailError" class="error-text"></div>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" placeholder=" ">
+      <label>Password</label>
+      <i class="fa-solid fa-eye-slash field-icon" id="eyeIcon" onclick="togglePass()"></i>
+      <div id="passError" class="error-text"></div>
+    </div>
+
+    <button class="auth-btn" id="loginBtn" onclick="login()"><span>Login</span></button>
+
+    <div class="divider">or</div>
+
+    <button class="guest-btn" onclick="continueGuest()"><i class="fa-solid fa-user"></i>&nbsp; Continue as Guest</button>
+
+    <div class="forgot-link" onclick="resetPassword()">Forgot password?</div>
+
+    <div id="msg"></div>
+  </div>
+
+  <div class="signup-box">
+    New here? <span onclick="window.location.href='signup.html'">Create account</span>
+  </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBZIjOvVaHMrl8iDt9u5XqBZx8u9Kw0Mqk",
+  authDomain: "fitwithsubha.firebaseapp.com",
+  projectId: "fitwithsubha",
+  storageBucket: "fitwithsubha.firebasestorage.app",
+  messagingSenderId: "783014767318",
+  appId: "1:783014767318:web:667a91a7f39936c60c7777"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+/* Returning users who already have weight data go straight to
+   Progress instead of the onboarding Dashboard flow */
+function landingPage(){
+  const hasData = localStorage.getItem("startWeight") && localStorage.getItem("targetWeight");
+  return hasData ? "progress.html" : "dashboard.html";
+}
+
+/* AUTO LOGIN — now routes to the Dashboard */
+onAuthStateChanged(auth, user => {
+  if (user) {
+    window.location.href = landingPage();
+  }
+});
+
+window.login = function(){
+  let email = document.getElementById("email").value.trim();
+  let pass = document.getElementById("password").value;
+
+  let emailEl = document.getElementById("email");
+  let passEl = document.getElementById("password");
+  let emailErr = document.getElementById("emailError");
+  let passErr = document.getElementById("passError");
+  let msg = document.getElementById("msg");
+  let btn = document.getElementById("loginBtn");
+
+  emailErr.innerText = "";
+  passErr.innerText = "";
+  msg.innerHTML = "";
+  emailEl.classList.remove("input-error");
+  passEl.classList.remove("input-error");
+
+  let hasError = false;
+
+  if(!email){
+    emailEl.classList.add("input-error");
+    emailErr.innerText = "Enter email";
+    hasError = true;
+  }
+  if(!pass){
+    passEl.classList.add("input-error");
+    passErr.innerText = "Enter password";
+    hasError = true;
+  }
+  if(hasError) return;
+
+  btn.classList.add("loading");
+  btn.disabled = true;
+
+  signInWithEmailAndPassword(auth, email, pass)
+  .then(() => {
+    msg.innerHTML = "<div class='msg success'>Login success 🚀</div>";
+    setTimeout(() => window.location.href = landingPage(), 900);
+  })
+  .catch(e => {
+    console.log(e.code);
+    if(e.code === "auth/user-not-found"){
+      emailEl.classList.add("input-error");
+      emailErr.innerText = "Email not registered";
+    } else if(e.code === "auth/wrong-password"){
+      passEl.classList.add("input-error");
+      passErr.innerText = "Wrong password";
+    } else if(e.code === "auth/invalid-credential"){
+      emailEl.classList.add("input-error");
+      passEl.classList.add("input-error");
+      msg.innerHTML = "<div class='msg error'>Email not registered or password incorrect</div>";
+    } else if(e.code === "auth/invalid-email"){
+      emailEl.classList.add("input-error");
+      emailErr.innerText = "Invalid email format";
+    } else {
+      msg.innerHTML = "<div class='msg error'>Login failed. Try again</div>";
+    }
+    btn.classList.remove("loading");
+    btn.disabled = false;
+  });
+};
+
+window.resetPassword = function(){
+  let email = document.getElementById("email").value.trim();
+  let emailEl = document.getElementById("email");
+  let passEl = document.getElementById("password");
+  let emailErr = document.getElementById("emailError");
+  let passErr = document.getElementById("passError");
+  let msg = document.getElementById("msg");
+
+  emailEl.classList.remove("input-error");
+  passEl.classList.remove("input-error");
+  emailErr.innerText = "";
+  passErr.innerText = "";
+  msg.innerHTML = "";
+
+  if(!email){
+    emailEl.classList.add("input-error");
+    emailErr.innerText = "Enter your email";
+    return;
+  }
+
+  sendPasswordResetEmail(auth, email)
+  .then(() => {
+    msg.innerHTML = "<div class='msg success'>📩 Reset link sent!</div>";
+  })
+  .catch(e => {
+    msg.innerHTML = "<div class='msg error'>" + e.message + "</div>";
+  });
+};
+
+window.togglePass = function(){
+  let p = document.getElementById("password");
+  let icon = document.getElementById("eyeIcon");
+  if(p.type === "password"){
+    p.type = "text";
+    icon.classList.replace("fa-eye-slash","fa-eye");
+  } else {
+    p.type = "password";
+    icon.classList.replace("fa-eye","fa-eye-slash");
+  }
+};
+
+window.continueGuest = function(){
+  localStorage.setItem("guest", "true");
+  window.location.href = landingPage();
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  ["email","password"].forEach(id => {
+    let el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener("input", () => {
+      el.classList.remove("input-error");
+      if(id === "email") document.getElementById("emailError").innerText = "";
+      if(id === "password") document.getElementById("passError").innerText = "";
+    });
+  });
+});
+</script>
+</body>
+</html>

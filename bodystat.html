@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Body Stats - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.form-block{
+  background:var(--surface-alt);
+  padding:16px;
+  border-radius:16px;
+  margin-bottom:14px;
+  border:1px solid var(--border);
+  transition:.2s;
+}
+.form-block:hover{box-shadow:var(--shadow-sm);}
+
+.form-label{
+  font-weight:600;
+  font-size:13px;
+  margin-bottom:8px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+.form-label i{color:var(--brand-1); font-size:13px;}
+
+input,select{
+  width:100%;
+  padding:12px;
+  margin-bottom:8px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-family:inherit;
+  font-size:13.5px;
+  background:#fff;
+  transition:.2s;
+}
+input:last-child,select:last-child{margin-bottom:0;}
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--brand-1);
+  box-shadow:0 0 0 3px rgba(106,17,203,0.14);
+}
+.input-error{border-color:var(--danger) !important; box-shadow:0 0 0 3px rgba(239,68,68,0.14) !important;}
+
+.height-row{display:flex; gap:10px;}
+.height-row input{flex:1; margin-bottom:0;}
+
+.calc-btn{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:30px;
+  background:var(--brand-gradient);
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:var(--shadow-brand);
+  transition:.2s;
+  position:relative;
+}
+.calc-btn:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(106,17,203,0.32);}
+.calc-btn:disabled{opacity:.7; cursor:not-allowed; transform:none;}
+
+.result-box{
+  margin-top:18px;
+  padding:22px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#f5f2ff,#f2f7ff);
+  text-align:center;
+  border:1px solid rgba(106,17,203,0.12);
+  animation:fadeUp .4s ease;
+}
+@keyframes fadeUp{from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);}}
+
+.error-box{
+  color:#dc2626;
+  font-weight:600;
+  line-height:1.8;
+  background:#fff1f1;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid rgba(239,68,68,0.2);
+  font-size:13px;
+  text-align:left;
+}
+
+.guest-banner{
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; background:var(--surface-alt);
+  padding:10px 12px; border-radius:12px; margin-bottom:16px; color:var(--text-muted);
+}
+.guest-banner span{color:var(--brand-1); font-weight:600; cursor:pointer;}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link active" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="flex items-center gap-8">
+      <span id="userNameTop" class="faint" style="font-size:12px;"></span>
+      <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+    </div>
+  </div>
+
+  <main class="page" style="max-width:640px;">
+
+    <section class="card fade-in">
+      <div class="section-title" style="margin-bottom:2px;">
+        <span><i class="fa-solid fa-ruler-vertical" style="color:var(--brand-1);"></i>&nbsp; Check Your Body Stats</span>
+      </div>
+      <div class="muted" style="font-size:12.5px; margin-bottom:14px;">Let's start your fitness journey 💪</div>
+
+      <div id="guestNote"></div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-arrows-up-down"></i>Height</div>
+        <select id="heightUnit">
+          <option value="ft">Feet + Inches</option>
+          <option value="cm">Height in cm</option>
+          <option value="inch">Height in inches</option>
+        </select>
+        <div class="height-row">
+          <input type="number" id="height" placeholder="Enter feet">
+          <input type="number" id="inchExtra" placeholder="Enter inches">
+        </div>
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-weight-scale"></i>Weight</div>
+        <select id="weightUnit">
+          <option value="kg">Weight in kg</option>
+          <option value="lbs">Weight in lbs</option>
+        </select>
+        <input type="number" id="weight" placeholder="Enter weight">
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-cake-candles"></i>Age</div>
+        <input type="number" id="age" placeholder="Enter age">
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-venus-mars"></i>Gender</div>
+        <select id="gender">
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-person-running"></i>Activity Level</div>
+        <select id="activity">
+          <option value="">Select activity</option>
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Light</option>
+          <option value="1.55">Moderate</option>
+          <option value="1.725">Active</option>
+        </select>
+      </div>
+
+      <button class="calc-btn" id="calcBtn" onclick="calculate()">Calculate</button>
+
+      <div class="result-box" id="result" style="display:none;"></div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script>
+function soon(e){
+  e.preventDefault();
+  toast("This section is arriving in the next update ✨", "info");
+  return false;
+}
+</script>
+
+<script type="module">
+import { toast } from "./assets/fitcore.js";
+window.toast = toast;
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBZIjOvVaHMrl8iDt9u5XqBZx8u9Kw0Mqk",
+  authDomain: "fitwithsubha.firebaseapp.com",
+  projectId: "fitwithsubha",
+  storageBucket: "fitwithsubha.firebasestorage.app",
+  messagingSenderId: "783014767318",
+  appId: "1:783014767318:web:667a91a7f39936c60c7777"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+/* 🔐 PROTECT PAGE */
+onAuthStateChanged(auth, (user) => {
+  let isGuest = localStorage.getItem("guest");
+  let nameTop = document.getElementById("userNameTop");
+  let guestNote = document.getElementById("guestNote");
+
+  if(user){
+    let name = user.email.split("@")[0];
+    nameTop.innerText = `Hi, ${name} 👋`;
+    guestNote.innerHTML = "";
+  } else if(isGuest === "true"){
+    nameTop.innerText = `Hi, Guest 👤`;
+    guestNote.innerHTML = `
+      <div class="guest-banner">
+        ⚠️ You're in Guest Mode.
+        <span onclick="window.location.href='login.html'">Login to save progress →</span>
+      </div>`;
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
+window.doSignOut = function(){
+  localStorage.removeItem("guest");
+  signOut(auth).then(() => { window.location.href = "login.html"; });
+};
+
+/* ELEMENTS */
+const heightUnit = document.getElementById("heightUnit");
+const heightInput = document.getElementById("height");
+const inchInput = document.getElementById("inchExtra");
+const weightUnit = document.getElementById("weightUnit");
+const weightInput = document.getElementById("weight");
+
+let lastHeightUnit = heightUnit.value;
+let lastWeightUnit = weightUnit.value;
+let isFirstLoad = true;
+
+function updateHeightFields(){
+  if(heightUnit.value === "ft"){
+    inchInput.style.display = "block";
+  } else {
+    inchInput.style.display = "none";
+    inchInput.value = "";
+  }
+}
+updateHeightFields();
+
+heightUnit.addEventListener("change", function(){
+  if(isFirstLoad) return;
+  let h = parseFloat(heightInput.value);
+  let inch = parseFloat(inchInput.value) || 0;
+  if(isNaN(h)) return;
+
+  let cm;
+  if(lastHeightUnit === "ft"){ cm = ((h * 12) + inch) * 2.54; }
+  else if(lastHeightUnit === "inch"){ cm = h * 2.54; }
+  else { cm = h; }
+
+  if(this.value === "cm"){ heightInput.value = Math.round(cm); }
+  else if(this.value === "inch"){ heightInput.value = (cm / 2.54).toFixed(1); }
+  else {
+    let total = cm / 2.54;
+    heightInput.value = Math.floor(total / 12);
+    inchInput.value = Math.round(total % 12);
+  }
+
+  lastHeightUnit = this.value;
+  updateHeightFields();
+});
+
+weightUnit.addEventListener("change", function(){
+  let w = parseFloat(weightInput.value);
+  if(isNaN(w)) return;
+  let kg = lastWeightUnit === "kg" ? w : w / 2.20462;
+  if(this.value === "kg"){ weightInput.value = Math.round(kg); }
+  else{ weightInput.value = (kg * 2.20462).toFixed(1); }
+  lastWeightUnit = this.value;
+});
+
+window.onload = function(){
+  setTimeout(() => { isFirstLoad = false; }, 300);
+};
+
+function clearErrors(){
+  document.querySelectorAll("input,select").forEach(el => el.classList.remove("input-error"));
+}
+function markError(id){
+  document.getElementById(id).classList.add("input-error");
+}
+document.querySelectorAll("input,select").forEach(el => {
+  el.addEventListener("input", () => el.classList.remove("input-error"));
+});
+
+function showError(messages){
+  let formatted = messages.map(msg => `⚠️ ${msg}`).join("<br>");
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `<div class="error-box">${formatted}</div>`;
+}
+
+/* MAIN CALCULATION — unchanged formulas */
+window.calculate = function calculate(){
+  const btn = document.getElementById("calcBtn");
+  btn.innerText = "Calculating...";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    clearErrors();
+    let errors = [];
+
+    let h = parseFloat(heightInput.value);
+    let hu = heightUnit.value;
+    let inchExtra = parseFloat(inchInput.value) || 0;
+    let w = parseFloat(weightInput.value);
+    let wu = weightUnit.value;
+    let age = parseFloat(document.getElementById("age").value);
+    let gender = document.getElementById("gender").value;
+    let act = document.getElementById("activity").value;
+
+    if(isNaN(h)){ markError("height"); errors.push("Enter valid height"); }
+    if(hu === "ft" && h > 10){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+    if(hu === "cm" && h > 305){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+    if(hu === "inch" && h > 120){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+    if(isNaN(w)){ markError("weight"); errors.push("Enter valid weight"); }
+    if(w > 500){ markError("weight"); errors.push("Weight exceeds realistic human limit"); }
+    if(isNaN(age)){ markError("age"); errors.push("Enter valid age"); }
+    if(age > 200){ markError("age"); errors.push("Age exceeds realistic limit"); }
+    if(gender === ""){ markError("gender"); errors.push("Select gender"); }
+    if(act === ""){ markError("activity"); errors.push("Select activity level"); }
+    if(hu === "ft" && inchExtra >= 12){ markError("inchExtra"); errors.push("Inches must be 0-11"); }
+
+    if(errors.length > 0){
+      showError(errors);
+      btn.innerText = "Recalculate";
+      btn.disabled = false;
+      return;
+    }
+
+    let heightCM = hu === "cm" ? h : hu === "inch" ? h * 2.54 : ((h * 12) + inchExtra) * 2.54;
+    let weightKG = wu === "kg" ? w : w / 2.20462;
+
+    let bmiVal = weightKG / ((heightCM / 100) ** 2);
+    let bmi = bmiVal.toFixed(1);
+
+    let status = "", color = "", text = "";
+    if(bmiVal < 16){ status = "Severely Underweight"; color = "#ef4444"; text = "You are severely underweight, but I believe in you — you can build a strong body 💪🔥"; }
+    else if(bmiVal < 18.5){ status = "Underweight"; color = "#facc15"; text = "You are underweight, but I believe in you — you can gain strength 🔥"; }
+    else if(bmiVal < 25){ status = "Normal"; color = "#22c55e"; text = "You are in great shape — keep it up 👏"; }
+    else if(bmiVal < 30){ status = "Overweight"; color = "#f97316"; text = "You are slightly overweight, but I believe in you — small steps will transform you 💯"; }
+    else{ status = "Obese"; color = "#ef4444"; text = "You are in obese range now, but I believe in you — discipline will change everything 🔥"; }
+
+    let bmr = gender === "male" ? 10 * weightKG + 6.25 * heightCM - 5 * age + 5
+            : gender === "female" ? 10 * weightKG + 6.25 * heightCM - 5 * age - 161
+            : 10 * weightKG + 6.25 * heightCM - 5 * age - 78;
+
+    let calories = Math.round(bmr * act);
+    const user = auth.currentUser;
+
+    if(user){
+      addDoc(collection(db, "users"), {
+        email: user.email, bmi: bmi, calories: calories, date: new Date().toISOString()
+      }).then(() => console.log("Auto saved ✅")).catch(e => console.log("Save error:", e));
+    }
+
+    localStorage.setItem("heightUnit", hu);
+    localStorage.setItem("heightValue", h);
+    localStorage.setItem("inchExtra", inchExtra);
+    localStorage.setItem("weight", weightKG);
+    localStorage.setItem("age", age);
+    localStorage.setItem("gender", gender);
+    localStorage.setItem("activity", act);
+
+    const result = document.getElementById("result");
+    result.style.display = "block";
+    result.innerHTML = `
+      <div style="font-size:22px;font-weight:700;">
+        📊 BMI: <span style="color:${color};font-size:24px;">${bmi}</span><br>
+        <span style="color:${color};">${status}</span>
+      </div>
+      <div style="margin-top:14px;padding:12px;border-radius:12px;background:#fff;">
+        🔥 <b>BMR / Calories :</b><br>${calories} kcal/day
+      </div>
+      <div style="margin-top:14px;font-size:13.5px;">${text}</div>
+      <div style="margin-top:16px; font-size:12.5px; color:#666;">If you want to change something, hit the button below 👇</div>
+      <button class="btn btn-primary mt-12" style="width:100%;" onclick="goToPlan(${bmi},${calories})">Create My Fitness Plan 🚀</button>
+    `;
+
+    setTimeout(() => {
+      result.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+
+    btn.innerText = "Recalculate";
+    btn.disabled = false;
+  }, 600);
+};
+
+async function goToPlan(bmi, calories){
+  const user = auth.currentUser;
+  let isGuest = localStorage.getItem("guest");
+
+  if(!user && isGuest !== "true"){
+    toast("Please login first", "error");
+    return;
+  }
+
+  try{
+    if(user){
+      await addDoc(collection(db, "users"), {
+        email: user.email, bmi: bmi, calories: calories, date: new Date().toISOString()
+      });
+      console.log("Data saved ✅");
+    }
+  } catch(e){
+    console.log("Error:", e);
+  }
+
+  localStorage.setItem("fromBMI", "true");
+  localStorage.setItem("bmi", bmi);
+  localStorage.setItem("calories", calories);
+
+  window.location.href = "plan.html";
+}
+window.goToPlan = goToPlan;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.profile-hero{
+  background:var(--brand-gradient); border-radius:var(--radius-xl); padding:26px 22px;
+  color:#fff; text-align:center; position:relative; overflow:hidden; box-shadow:var(--shadow-brand);
+}
+.profile-hero::before{
+  content:""; position:absolute; width:200px; height:200px; border-radius:50%;
+  background:rgba(255,255,255,0.12); top:-70px; right:-50px;
+}
+.avatar-circle{
+  width:74px; height:74px; border-radius:50%; margin:0 auto 12px;
+  background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center;
+  font-size:26px; font-weight:700; border:2px solid rgba(255,255,255,0.35); position:relative;
+}
+.profile-name{font-size:17px; font-weight:700; position:relative;}
+.profile-email{font-size:12px; opacity:.85; margin-top:2px; position:relative;}
+.verify-badge{
+  display:inline-flex; align-items:center; gap:5px; margin-top:10px;
+  padding:5px 12px; border-radius:20px; background:rgba(255,255,255,0.16); font-size:11px; font-weight:600; position:relative;
+}
+
+.info-row{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 0; border-bottom:1px solid var(--border);
+}
+.info-row:last-child{border-bottom:none;}
+.info-label{font-size:12.5px; color:var(--text-muted); display:flex; align-items:center; gap:8px;}
+.info-label i{color:var(--brand-1); width:16px; text-align:center;}
+.info-value{font-size:13px; font-weight:600;}
+
+.pref-row{
+  display:flex; align-items:center; justify-content:space-between; padding:12px 0;
+}
+.toggle{
+  width:42px; height:24px; border-radius:20px; background:var(--surface-alt);
+  border:1px solid var(--border); position:relative; cursor:pointer; transition:.2s;
+}
+.toggle::after{
+  content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%;
+  background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.3); transition:.2s;
+}
+.toggle.on{background:var(--brand-gradient); border-color:transparent;}
+.toggle.on::after{left:20px;}
+
+.danger-btn{
+  width:100%; padding:13px; border-radius:14px; border:1px solid rgba(239,68,68,0.3);
+  background:rgba(239,68,68,0.06); color:#dc2626; font-weight:600; font-size:13px; cursor:pointer; transition:.2s;
+}
+.danger-btn:hover{background:rgba(239,68,68,0.12);}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+  </div>
+
+  <main class="page" style="max-width:560px;">
+
+    <div class="profile-hero fade-in">
+      <div class="avatar-circle" id="avatarCircle">—</div>
+      <div class="profile-name" id="profileName">Loading…</div>
+      <div class="profile-email" id="profileEmail"></div>
+      <div class="verify-badge" id="verifyBadge" style="display:none;"></div>
+    </div>
+
+    <!-- ACCOUNT INFO -->
+    <section class="mt-24">
+      <div class="section-title">Account</div>
+      <div class="card">
+        <div class="info-row"><div class="info-label"><i class="fa-solid fa-envelope"></i>Email</div><div class="info-value" id="accEmail">—</div></div>
+        <div class="info-row"><div class="info-label"><i class="fa-solid fa-shield-halved"></i>Account Type</div><div class="info-value" id="accType">—</div></div>
+        <div class="info-row"><div class="info-label"><i class="fa-solid fa-calendar"></i>Member Since</div><div class="info-value" id="accSince">—</div></div>
+      </div>
+    </section>
+
+    <!-- FITNESS INFO -->
+    <section class="mt-24">
+      <div class="section-title">Fitness Information</div>
+      <div class="card" id="fitnessCard">
+        <div class="empty-state">
+          <i class="fa-solid fa-ruler-vertical"></i>
+          <div class="empty-title">No body stats yet</div>
+          <div class="empty-sub">Complete Body Stats to see your info here.</div>
+          <a class="btn btn-primary btn-sm mt-16" href="bodystat.html">Get Started</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GOAL -->
+    <section class="mt-24">
+      <div class="section-title">Fitness Goal</div>
+      <div class="card" id="goalCard">
+        <div class="empty-state">
+          <i class="fa-solid fa-bullseye"></i>
+          <div class="empty-title">No goal set yet</div>
+          <div class="empty-sub">Generate a plan to set your fitness goal.</div>
+          <a class="btn btn-primary btn-sm mt-16" href="plan.html">Create Plan</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PREFERENCES -->
+    <section class="mt-24">
+      <div class="section-title">Preferences</div>
+      <div class="card">
+        <div class="pref-row">
+          <div class="info-label"><i class="fa-solid fa-bell"></i>Daily reminders</div>
+          <div class="toggle" id="toggleReminders"></div>
+        </div>
+        <div class="pref-row">
+          <div class="info-label"><i class="fa-solid fa-weight-scale"></i>Prefer lbs over kg</div>
+          <div class="toggle" id="toggleUnits"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNT ACTIONS -->
+    <section class="mt-24" style="margin-bottom:20px;">
+      <div class="section-title">Account Settings</div>
+      <div class="card">
+        <button class="btn btn-secondary btn-block mt-8" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+        <button class="danger-btn mt-12" onclick="resetLocalData()"><i class="fa-solid fa-trash"></i>&nbsp; Clear My Local Data</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script type="module">
+import { requireAuth, doSignOut, getLocalData, bmiCategory, toast } from "./assets/fitcore.js";
+window.doSignOut = doSignOut;
+window.toast = toast;
+
+window.resetLocalData = function(){
+  if(!confirm("This will clear all locally stored fitness data on this device (stats, plan, progress, workouts, nutrition). This cannot be undone. Continue?")) return;
+  const keep = ["guest"];
+  Object.keys(localStorage).forEach(k => { if(!keep.includes(k)) localStorage.removeItem(k); });
+  toast("Local data cleared", "success");
+  setTimeout(() => window.location.href = "dashboard.html", 900);
+};
+
+function initToggle(el, storageKey, defaultOn){
+  let on = localStorage.getItem(storageKey);
+  on = on === null ? defaultOn : on === "true";
+  function paint(){ el.classList.toggle("on", on); }
+  paint();
+  el.onclick = () => {
+    on = !on;
+    localStorage.setItem(storageKey, on);
+    paint();
+  };
+}
+
+(async () => {
+  const { user, isGuest } = await requireAuth();
+  const data = getLocalData();
+
+  const name = isGuest ? "Guest User" : (user.displayName || (user.email ? user.email.split("@")[0] : "User"));
+  const initials = name.split(" ").map(w => w[0]).join("").slice(0,2).toUpperCase();
+
+  document.getElementById("avatarCircle").innerText = initials || "U";
+  document.getElementById("profileName").innerText = name;
+  document.getElementById("profileEmail").innerText = isGuest ? "Not signed in" : (user.email || "");
+
+  const verifyBadge = document.getElementById("verifyBadge");
+  if(!isGuest && user){
+    verifyBadge.style.display = "inline-flex";
+    verifyBadge.innerHTML = user.emailVerified
+      ? '<i class="fa-solid fa-circle-check"></i> Email Verified'
+      : '<i class="fa-solid fa-triangle-exclamation"></i> Email Not Verified';
+  }
+
+  document.getElementById("accEmail").innerText = isGuest ? "—" : (user.email || "—");
+  document.getElementById("accType").innerText = isGuest ? "Guest (not saved)" : "Registered Account";
+  document.getElementById("accSince").innerText = (!isGuest && user.metadata && user.metadata.creationTime)
+    ? new Date(user.metadata.creationTime).toLocaleDateString(undefined,{year:"numeric",month:"short",day:"numeric"})
+    : "—";
+
+  // FITNESS INFO
+  if(data.weight != null){
+    const cat = bmiCategory(data.bmi);
+    document.getElementById("fitnessCard").innerHTML = `
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-weight-scale"></i>Weight</div><div class="info-value">${Math.round(data.weight)} kg</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-cake-candles"></i>Age</div><div class="info-value">${data.age ?? "—"}</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-venus-mars"></i>Gender</div><div class="info-value" style="text-transform:capitalize;">${data.gender || "—"}</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-person-running"></i>Activity Level</div><div class="info-value">${
+        data.activity === "1.2" ? "Sedentary" : data.activity === "1.375" ? "Light" : data.activity === "1.55" ? "Moderate" : data.activity === "1.725" ? "Active" : "—"
+      }</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-chart-simple"></i>BMI</div><div class="info-value" style="color:${cat.color};">${data.bmi} · ${cat.label}</div></div>
+    `;
+  }
+
+  // GOAL
+  if(data.savedPlan){
+    const p = data.savedPlan;
+    document.getElementById("goalCard").innerHTML = `
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-bullseye"></i>Goal Type</div><div class="info-value" style="text-transform:capitalize;">${p.goalType === "deficit" ? "Weight Loss" : "Muscle Gain"}</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-weight-hanging"></i>Target Weight</div><div class="info-value">${p.targetWeight} kg</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-calendar-days"></i>Timeline</div><div class="info-value">${p.weeks} weeks</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-fire"></i>Target Calories</div><div class="info-value">${p.targetCalories} kcal</div></div>
+      <div class="info-row"><div class="info-label"><i class="fa-solid fa-dumbbell"></i>Workout Days</div><div class="info-value">${p.workoutDays || "—"} / week</div></div>
+    `;
+  }
+
+  initToggle(document.getElementById("toggleReminders"), "prefReminders", true);
+  initToggle(document.getElementById("toggleUnits"), "prefLbs", false);
+})();
+</script>
+
+</body>
+</html>

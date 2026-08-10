@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitness Plan - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.form-block{
+  background:var(--surface-alt);
+  padding:16px;
+  border-radius:16px;
+  margin-bottom:14px;
+  border:1px solid var(--border);
+  transition:.2s;
+}
+.form-block:hover{box-shadow:var(--shadow-sm);}
+.form-label{font-weight:600; font-size:13px; margin-bottom:8px; display:flex; align-items:center; gap:7px;}
+.form-label i{color:var(--brand-1); font-size:13px;}
+
+input,select{
+  width:100%; padding:12px; margin-bottom:8px;
+  border:1px solid var(--border); border-radius:10px;
+  font-family:inherit; font-size:13.5px; background:#fff; transition:.2s;
+}
+input:last-child,select:last-child{margin-bottom:0;}
+input:focus,select:focus{outline:none; border-color:var(--brand-1); box-shadow:0 0 0 3px rgba(106,17,203,0.14);}
+.input-error{border-color:var(--danger) !important; box-shadow:0 0 0 3px rgba(239,68,68,0.14) !important;}
+
+.height-row{display:flex; gap:10px;}
+.height-row input{flex:1; margin-bottom:0;}
+
+.calc-btn{
+  width:100%; padding:15px; border:none; border-radius:30px;
+  background:var(--brand-gradient); color:#fff; font-size:15px; font-weight:600;
+  cursor:pointer; box-shadow:var(--shadow-brand); transition:.2s;
+}
+.calc-btn:hover{transform:translateY(-2px); box-shadow:0 16px 34px rgba(106,17,203,0.32);}
+
+.result-box{
+  margin-top:18px; padding:22px; border-radius:20px;
+  background:linear-gradient(135deg,#f5f2ff,#f2f7ff); text-align:center;
+  border:1px solid rgba(106,17,203,0.12); animation:fadeUp .4s ease; display:none;
+}
+@keyframes fadeUp{from{opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);}}
+
+.error-box{
+  color:#dc2626; font-weight:600; line-height:1.8; background:#fff1f1;
+  padding:14px; border-radius:12px; border:1px solid rgba(239,68,68,0.2); font-size:13px; text-align:left;
+}
+
+.cal-box{
+  background:#fff; padding:16px; border-radius:14px; margin-top:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.06); font-size:14.5px; text-align:left;
+}
+.cal-box b{font-size:15.5px;}
+
+.ai-box{
+  margin-top:15px; padding:16px; border-radius:16px;
+  background:linear-gradient(135deg,#f3f0ff,#eef2ff);
+  border:1px solid rgba(106,17,203,0.15); text-align:left; font-size:13px;
+}
+
+.guest-banner{
+  display:flex; align-items:center; gap:8px; font-size:12px;
+  background:var(--surface-alt); padding:10px 12px; border-radius:12px; margin-bottom:16px; color:var(--text-muted);
+}
+.guest-banner span{color:var(--brand-1); font-weight:600; cursor:pointer;}
+
+.action-row{display:flex; gap:10px; margin-top:14px;}
+.action-row .btn{flex:1;}
+
+.journey-card{
+  margin-top:20px; padding:18px; border-radius:18px;
+  background:linear-gradient(135deg,#f3f0ff,#eef2ff);
+  border:1px solid rgba(106,17,203,0.15); text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link active" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="flex items-center gap-8">
+      <span id="userNameTop" class="faint" style="font-size:12px;"></span>
+      <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+    </div>
+  </div>
+
+  <main class="page" style="max-width:640px;">
+
+    <section class="card fade-in">
+      <div class="section-title" style="margin-bottom:2px;">
+        <span><i class="fa-solid fa-clipboard-list" style="color:var(--brand-1);"></i>&nbsp; Smart Fitness Plan 🚀</span>
+      </div>
+      <div class="muted" style="font-size:12.5px; margin-bottom:14px;">Let's build your personalized plan 💪</div>
+
+      <div id="guestNote"></div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-arrows-up-down"></i>Height</div>
+        <select id="heightUnit">
+          <option value="ft">Feet + Inches</option>
+          <option value="cm">Height in cm</option>
+          <option value="inch">Height in inches</option>
+        </select>
+        <div class="height-row">
+          <input type="number" id="height" placeholder="Enter feet">
+          <input type="number" id="inchExtra" placeholder="Enter inches">
+        </div>
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-weight-scale"></i>Current & Target Weight</div>
+        <select id="weightUnit">
+          <option value="kg">Weight in kg</option>
+          <option value="lbs">Weight in lbs</option>
+        </select>
+        <input type="number" id="currentWeight" placeholder="Current weight">
+        <input type="number" id="targetWeight" placeholder="Target weight">
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-calendar-days"></i>Time Period (weeks)</div>
+        <input type="number" id="weeks" placeholder="Enter weeks">
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-cake-candles"></i>Age</div>
+        <input type="number" id="age" placeholder="Age">
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-venus-mars"></i>Gender</div>
+        <select id="gender">
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-person-running"></i>Activity Level</div>
+        <select id="activity">
+          <option value="">Select activity</option>
+          <option value="1.2">Sedentary</option>
+          <option value="1.375">Light</option>
+          <option value="1.55">Moderate</option>
+          <option value="1.725">Active</option>
+        </select>
+      </div>
+
+      <div class="form-block">
+        <div class="form-label"><i class="fa-solid fa-dumbbell"></i>Workout Preference</div>
+        <select id="workoutDays">
+          <option value="3">3 days / week</option>
+          <option value="4" selected>4 days / week</option>
+          <option value="5">5 days / week</option>
+          <option value="6">6 days / week</option>
+        </select>
+        <select id="workoutDuration">
+          <option value="30">30 min sessions</option>
+          <option value="45" selected>45 min sessions</option>
+          <option value="60">60 min sessions</option>
+        </select>
+        <select id="dietPref">
+          <option value="any">No dietary restriction</option>
+          <option value="veg">Vegetarian</option>
+          <option value="vegan">Vegan</option>
+          <option value="nonveg">Non-vegetarian focused</option>
+        </select>
+      </div>
+
+      <button class="calc-btn" onclick="calculatePlan()">Calculate Plan</button>
+
+      <div class="result-box" id="result"></div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link active" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script>
+function soon(e){
+  e.preventDefault();
+  toast("This section is arriving in the next update ✨", "info");
+  return false;
+}
+</script>
+
+<script type="module">
+import { toast } from "./assets/fitcore.js";
+window.toast = toast;
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBZIjOvVaHMrl8iDt9u5XqBZx8u9Kw0Mqk",
+  authDomain: "fitwithsubha.firebaseapp.com",
+  projectId: "fitwithsubha",
+  storageBucket: "fitwithsubha.firebasestorage.app",
+  messagingSenderId: "783014767318",
+  appId: "1:783014767318:web:667a91a7f39936c60c7777"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  let isGuest = localStorage.getItem("guest");
+  let nameTop = document.getElementById("userNameTop");
+  let guestNote = document.getElementById("guestNote");
+
+  if(user){
+    currentUser = user;
+    let name = user.email.split("@")[0];
+    nameTop.innerText = `Hi, ${name} 👋`;
+    guestNote.innerHTML = "";
+  } else if(isGuest === "true"){
+    nameTop.innerText = `Hi, Guest 👤`;
+    localStorage.removeItem("savedPlan");
+    guestNote.innerHTML = `
+      <div class="guest-banner">
+        ⚠️ You're in Guest Mode.
+        <span onclick="window.location.href='login.html'">Login to save progress</span>
+      </div>`;
+  } else {
+    window.location.href = "login.html";
+  }
+});
+
+window.doSignOut = function(){
+  localStorage.removeItem("guest");
+  signOut(auth).then(() => { window.location.href = "login.html"; });
+};
+
+/* ELEMENTS */
+const heightUnit = document.getElementById("heightUnit");
+const heightInput = document.getElementById("height");
+const inchInput = document.getElementById("inchExtra");
+const weightUnit = document.getElementById("weightUnit");
+const currentWeight = document.getElementById("currentWeight");
+const targetWeight = document.getElementById("targetWeight");
+
+let lastHeightUnit = "ft";
+let lastWeightUnit = "kg";
+let isFirstLoad = true;
+
+function updateHeightFields(){
+  if(heightUnit.value === "ft"){ inchInput.style.display = "block"; }
+  else { inchInput.style.display = "none"; inchInput.value = ""; }
+}
+
+window.addEventListener("load", function(){
+  let fromBMI = localStorage.getItem("fromBMI");
+
+  if(fromBMI === "true"){
+    let hu = localStorage.getItem("heightUnit");
+    let h = localStorage.getItem("heightValue");
+    let inch = localStorage.getItem("inchExtra");
+    let w = localStorage.getItem("weight");
+    let age = localStorage.getItem("age");
+    let gender = localStorage.getItem("gender");
+    let act = localStorage.getItem("activity");
+
+    if(hu){ heightUnit.value = hu; lastHeightUnit = hu; }
+    if(hu === "ft"){ heightInput.value = h || ""; inchInput.value = inch || ""; }
+    else if(h){ heightInput.value = Math.round(h); }
+
+    if(w){ currentWeight.value = Math.round(w); }
+    if(age) document.getElementById("age").value = age;
+    if(gender) document.getElementById("gender").value = gender;
+    if(act) document.getElementById("activity").value = act;
+
+    updateHeightFields();
+    localStorage.removeItem("fromBMI");
+  } else {
+    document.querySelectorAll("input").forEach(el => el.value = "");
+    document.getElementById("result").style.display = "none";
+    document.getElementById("result").innerHTML = "";
+  }
+
+  let saved = localStorage.getItem("savedPlan");
+  if(saved){
+    let data = JSON.parse(saved);
+    const result = document.getElementById("result");
+    result.style.display = "block";
+    result.innerHTML = `
+      <div class="cal-box">
+        📌 <b>Last Saved Plan</b><br><br>
+        ⚖️ Weight: ${data.weight} → ${data.targetWeight}<br>
+        📅 Duration: ${data.weeks} weeks<br><br>
+        🔥 Calories: ${data.currentCalories}<br>
+        🎯 Target: ${data.targetCalories}<br>
+        📉 ${data.perWeek} kg/week<br><br>
+        🕒 Saved on: ${data.date}
+      </div>
+      <a class="btn btn-primary btn-block mt-12" href="progress.html">📈 View My Progress →</a>`;
+    setTimeout(() => {
+      result.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 200);
+  }
+  setTimeout(() => { isFirstLoad = false; }, 300);
+});
+
+heightUnit.addEventListener("change", function(){
+  if(isFirstLoad) return;
+  let h = parseFloat(heightInput.value);
+  let inch = parseFloat(inchInput.value) || 0;
+  if(isNaN(h)) return;
+
+  let cm;
+  if(lastHeightUnit === "ft"){ cm = ((h * 12) + inch) * 2.54; }
+  else if(lastHeightUnit === "inch"){ cm = h * 2.54; }
+  else{ cm = h; }
+
+  if(this.value === "cm"){ heightInput.value = Math.round(cm); }
+  else if(this.value === "inch"){ heightInput.value = (cm / 2.54).toFixed(1); }
+  else{
+    let totalInches = cm / 2.54;
+    heightInput.value = Math.floor(totalInches / 12);
+    inchInput.value = Math.round(totalInches % 12);
+  }
+  lastHeightUnit = this.value;
+  updateHeightFields();
+});
+
+weightUnit.addEventListener("change", function(){
+  let cw = parseFloat(currentWeight.value);
+  let tw = parseFloat(targetWeight.value);
+
+  function convert(val){
+    if(isNaN(val)) return "";
+    let kg = lastWeightUnit === "kg" ? val : val / 2.20462;
+    return weightUnit.value === "kg" ? Math.round(kg) : (kg * 2.20462).toFixed(1);
+  }
+  currentWeight.value = convert(cw);
+  targetWeight.value = convert(tw);
+  lastWeightUnit = weightUnit.value;
+});
+
+function clearErrors(){
+  document.querySelectorAll("input,select").forEach(el => el.classList.remove("input-error"));
+}
+function markError(id){ document.getElementById(id).classList.add("input-error"); }
+function showError(messages){
+  let formatted = messages.map(msg => `⚠️ ${msg}`).join("<br>");
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `<div class="error-box">${formatted}</div>`;
+}
+
+document.querySelectorAll("input,select").forEach(el => {
+  el.addEventListener("input", () => el.classList.remove("input-error"));
+});
+
+/* MAIN CALCULATION — formulas unchanged from original */
+window.calculatePlan = function calculatePlan(){
+  clearErrors();
+  let errors = [];
+
+  let h = parseFloat(heightInput.value);
+  let hu = heightUnit.value;
+  let inch = parseFloat(inchInput.value) || 0;
+  let cw = parseFloat(currentWeight.value);
+  let tw = parseFloat(document.getElementById("targetWeight").value);
+
+  if(cw > 500){ markError("currentWeight"); errors.push("Weight exceeds realistic human limit"); }
+  if(tw > 500){ markError("targetWeight"); errors.push("Target weight exceeds realistic human limit"); }
+
+  let wu = weightUnit.value;
+  let weeks = parseFloat(document.getElementById("weeks").value);
+  let age = parseFloat(document.getElementById("age").value);
+  let gender = document.getElementById("gender").value;
+  let act = document.getElementById("activity").value;
+  let workoutDays = document.getElementById("workoutDays").value;
+  let workoutDuration = document.getElementById("workoutDuration").value;
+  let dietPref = document.getElementById("dietPref").value;
+
+  if(isNaN(h)){ markError("height"); errors.push("Enter height"); }
+  if(hu === "ft" && h > 10){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+  if(hu === "cm" && h > 305){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+  if(hu === "inch" && h > 120){ markError("height"); errors.push("Height exceeds realistic human limit"); }
+  if(isNaN(cw)){ markError("currentWeight"); errors.push("Enter current weight"); }
+  if(isNaN(tw)){ markError("targetWeight"); errors.push("Enter target weight"); }
+  if(isNaN(weeks)){ markError("weeks"); errors.push("Enter weeks"); }
+  if(isNaN(age)){ markError("age"); errors.push("Enter age"); }
+  if(gender === ""){ markError("gender"); errors.push("Select gender"); }
+  if(act === ""){ markError("activity"); errors.push("Select activity"); }
+  if(hu === "ft" && inch >= 12){ markError("inchExtra"); errors.push("Inches must be 0-11"); }
+
+  if(errors.length > 0){ showError(errors); return; }
+
+  let heightCM = hu === "cm" ? h : hu === "inch" ? h * 2.54 : ((h * 12) + inch) * 2.54;
+  let currentKG = wu === "kg" ? cw : cw / 2.20462;
+  let targetKG = wu === "kg" ? tw : tw / 2.20462;
+
+  localStorage.setItem("targetWeight", targetKG.toFixed(1));
+
+  let history = JSON.parse(localStorage.getItem("weightHistory")) || [];
+  if(history.length === 0){
+    history = [{ weight: currentKG, date: new Date().toLocaleDateString() }];
+    localStorage.setItem("weightHistory", JSON.stringify(history));
+  }
+  /* Connect this plan directly to the Progress page so it doesn't
+     ask the user to "Start Tracking" again from scratch */
+  if(!localStorage.getItem("startWeight")){
+    localStorage.setItem("startWeight", currentKG);
+    localStorage.setItem("unit", "kg");
+    if(!localStorage.getItem("lastEntryDate")){
+      localStorage.setItem("lastEntryDate", new Date().toDateString());
+      localStorage.setItem("streak", "1");
+    }
+  }
+
+  let bmr = gender === "male" ? 10 * currentKG + 6.25 * heightCM - 5 * age + 5
+          : gender === "female" ? 10 * currentKG + 6.25 * heightCM - 5 * age - 161
+          : 10 * currentKG + 6.25 * heightCM - 5 * age - 78;
+
+  let currentCalories = Math.round(bmr * act);
+  let diff = Math.abs(currentKG - targetKG);
+  let perWeek = (diff / weeks).toFixed(2);
+
+  let warningMsg = "";
+  if(currentKG > targetKG){
+    if(perWeek > 1){ warningMsg = "⚠️ You are trying to lose weight too fast. This can cause muscle loss & health issues."; }
+    if(targetKG < (18.5 * ((heightCM/100)**2))){ warningMsg = "⚠️ Target weight is underweight range. Not recommended."; }
+  } else {
+    if(perWeek > 0.75){ warningMsg = "⚠️ Too fast weight gain may lead to fat gain instead of muscle."; }
+    if(targetKG > (30 * ((heightCM/100)**2))){ warningMsg = "⚠️ Target weight falls in obese range. Not healthy."; }
+  }
+
+  let healthMsg = "", healthColor = "", guideText = "";
+  if(currentKG > targetKG){
+    guideText = "(Healthy fat loss: 0.5–1 kg/week)";
+    if(perWeek <= 1){ healthMsg = "Healthy fat loss range ✅"; healthColor = "#22c55e"; }
+    else{ healthMsg = "Too aggressive fat loss ⚠️"; healthColor = "#ef4444"; }
+  } else {
+    guideText = "(Healthy weight gain: 0.25–0.5 kg/week)";
+    if(perWeek <= 0.5){ healthMsg = "Healthy weight gain range 💪"; healthColor = "#22c55e"; }
+    else{ healthMsg = "Too fast weight gain ⚠️"; healthColor = "#f97316"; }
+  }
+
+  let dailyChange = Math.round((diff * 7700) / (weeks * 7));
+  let targetCalories = currentKG > targetKG ? currentCalories - dailyChange : currentCalories + dailyChange;
+  let goalType = currentKG > targetKG ? "deficit" : "surplus";
+
+  let aiAdvice = "", aiWorkout = "", aiDiet = "";
+  const dietNote = dietPref === "veg" ? " (vegetarian)" : dietPref === "vegan" ? " (vegan)" : dietPref === "nonveg" ? " (non-veg focused)" : "";
+
+  if(currentKG > targetKG){
+    aiAdvice = "Focus on consistency. Small calorie deficit daily will give long-term results.";
+    aiDiet = `🍽️ High Protein Diet${dietNote}:<br>• Eggs / Chicken / Paneer / Lentils<br>• Rice + Dal (controlled)<br>• Avoid sugar & junk`;
+    aiWorkout = `🏋️ Workout Plan (${workoutDays} days/week · ${workoutDuration} min):<br>• Strength training most sessions<br>• 20 min cardio on training days<br>• Core exercises 3x/week`;
+  } else {
+    aiAdvice = "Eat in surplus but keep it clean. Focus on muscle gain, not fat.";
+    aiDiet = `🍽️ Muscle Gain Diet${dietNote}:<br>• High protein + carbs<br>• Milk, peanut butter, rice, legumes<br>• Eat 4–5 meals/day`;
+    aiWorkout = `🏋️ Workout Plan (${workoutDays} days/week · ${workoutDuration} min):<br>• Heavy strength training<br>• Progressive overload<br>• Less cardio`;
+  }
+  if(perWeek > 1){ aiAdvice = "⚠️ Your plan is too aggressive. Slow down for sustainable results."; }
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <div class="cal-box">🔥 <b>Current Calories</b><br>${currentCalories} kcal/day</div>
+    <div class="cal-box">🎯 <b>Target Calories</b><br>${targetCalories} kcal/day</div>
+    <div style="margin-top:16px;">⚡ Daily ${dailyChange} kcal ${goalType}</div>
+    <div>📉 This will result in approx <b>${perWeek} kg/week</b></div>
+    <div style="margin-top:6px;font-weight:600;color:${healthColor};">${healthMsg}</div>
+    <div style="font-size:12px;color:#888;margin-top:4px;">${guideText}</div>
+    ${warningMsg ? `<div style="margin-top:10px;color:#ef4444;font-weight:600;font-size:13px;">${warningMsg}</div>` : ""}
+    <div style="margin-top:18px;font-weight:600;">Next Step 👇</div>
+    <div class="ai-box">
+      <b>🤖 Smart AI Suggestions</b><br><br>
+      <div style="color:#555;">${aiAdvice}</div>
+      <div style="margin-top:10px;">${aiDiet}</div>
+      <div style="margin-top:10px;">${aiWorkout}</div>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-secondary save-btn">💾 Save</button>
+      <button class="btn btn-secondary share-btn">📤 Share</button>
+      <button class="btn btn-secondary" onclick="localStorage.removeItem('savedPlan'); location.reload();">🗑️ Clear</button>
+    </div>
+    <a class="btn btn-primary btn-block mt-12" href="progress.html">📈 View My Progress →</a>
+    <div class="journey-card">
+      <div style="font-weight:700;font-size:15.5px;margin-bottom:6px;background:var(--brand-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🚀 My Transformation</div>
+      <p style="font-size:13px;color:#444;margin-bottom:6px;">Thinking this routine might be hard to follow?</p>
+      <p style="font-size:12px;color:#666;margin-bottom:12px;">I felt the same once — here's how I changed my life in 1 year 💪</p>
+      <a class="btn btn-primary btn-sm" href="myjourney.html">How I Did It 🔥 →</a>
+    </div>
+  `;
+
+  const saveBtn = result.querySelector(".save-btn");
+  if(saveBtn){
+    saveBtn.onclick = async function(){
+      let twInput = Number(document.getElementById("targetWeight").value);
+      let wuNow = document.getElementById("weightUnit").value;
+      let finalTargetKG = wuNow === "kg" ? twInput : twInput / 2.20462;
+
+      const data = {
+        currentCalories: Number(currentCalories),
+        targetCalories: Number(targetCalories),
+        perWeek: Number(perWeek),
+        goalType: goalType,
+        weight: Number(currentKG),
+        targetWeight: finalTargetKG.toFixed(1),
+        weeks: Number(document.getElementById("weeks").value),
+        workoutDays: Number(workoutDays),
+        workoutDuration: Number(workoutDuration),
+        dietPref: dietPref,
+        date: new Date().toLocaleString()
+      };
+
+      if(currentUser){
+        try{
+          await setDoc(doc(db, "plans", currentUser.uid), data);
+          console.log("Saved to Firebase");
+        } catch(err){ console.log(err); }
+      }
+
+      localStorage.setItem("savedPlan", JSON.stringify(data));
+      localStorage.setItem("targetWeight", finalTargetKG.toFixed(1));
+      toast("✅ Plan saved! New target: " + finalTargetKG.toFixed(1) + " kg", "success");
+    };
+  }
+
+  const shareBtn = result.querySelector(".share-btn");
+  if(shareBtn){
+    shareBtn.onclick = function(){
+      let text = `🔥 My Fitness Plan\n\nCalories: ${currentCalories} kcal\nTarget: ${targetCalories} kcal\nProgress: ${perWeek} kg/week\n\nCreated using FitWithSubha 💪`;
+      if(navigator.share){
+        navigator.share({ title: "My Fitness Plan", text: text });
+      } else {
+        navigator.clipboard.writeText(text);
+        toast("📋 Plan copied! Paste anywhere to share.", "success");
+      }
+    };
+  }
+
+  setTimeout(() => {
+    result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, 100);
+};
+</script>
+
+</body>
+</html>

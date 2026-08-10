@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrition - FitWithSubha</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/theme.css">
+
+<style>
+.ring-lg{
+  width:120px;height:120px;border-radius:50%;
+  background:conic-gradient(var(--brand-1) calc(var(--pct,0)*1%), var(--surface-alt) 0);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto;
+}
+.ring-lg-inner{
+  width:96px;height:96px;border-radius:50%;
+  background:var(--surface);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.ring-lg-inner .num{font-size:19px;font-weight:700;}
+.ring-lg-inner .lbl{font-size:10px;color:var(--text-muted);}
+
+.macro-row{display:flex; gap:10px; margin-top:16px;}
+.macro-pill{
+  flex:1; text-align:center; padding:10px 6px; border-radius:14px;
+  background:var(--surface-alt); border:1px solid var(--border);
+}
+.macro-pill .val{font-size:15px; font-weight:700;}
+.macro-pill .lbl{font-size:10px; color:var(--text-muted); margin-top:2px;}
+
+.meal-item{
+  display:flex; align-items:center; gap:12px;
+  padding:12px 14px; border-radius:14px; border:1px solid var(--border);
+  background:var(--surface);
+}
+.meal-item + .meal-item{margin-top:8px;}
+.meal-icon{
+  width:38px;height:38px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(106,17,203,0.1); color:var(--brand-1); font-size:15px; flex:0 0 38px;
+}
+.meal-delete{
+  color:var(--text-faint); cursor:pointer; padding:6px;
+}
+.meal-delete:hover{color:var(--danger);}
+
+.add-form{
+  display:grid; grid-template-columns:1fr; gap:10px;
+}
+@media(min-width:520px){
+  .add-form{grid-template-columns:2fr 1fr 1fr 1fr auto;}
+}
+.add-form input, .add-form select{
+  padding:11px; border-radius:10px; border:1px solid var(--border); font-size:13px; font-family:inherit;
+}
+.add-form input:focus{outline:none; border-color:var(--brand-1); box-shadow:0 0 0 3px rgba(106,17,203,0.12);}
+
+.water-row{display:flex; align-items:center; gap:10px; margin-top:10px;}
+.water-glass{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--border); color:var(--text-faint); cursor:pointer; font-size:14px; transition:.15s;
+}
+.water-glass.filled{
+  background:linear-gradient(135deg,#2575fc,#6a11cb); color:#fff; border-color:transparent;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-shell">
+
+  <nav class="sidebar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>FitWithSubha</span></div>
+    <a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Dashboard</a>
+    <a class="sidebar-link" href="bodystat.html"><i class="fa-solid fa-ruler-vertical"></i>Body Stats</a>
+    <a class="sidebar-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Fitness Plan</a>
+    <a class="sidebar-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+    <a class="sidebar-link active" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Nutrition</a>
+    <a class="sidebar-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workouts</a>
+    <a class="sidebar-link" href="aicoach.html"><i class="fa-solid fa-robot"></i>AI Coach</a>
+    <a class="sidebar-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>My Journey</a>
+    <a class="sidebar-link" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="sidebar-foot">
+      <button class="btn btn-secondary btn-block btn-sm" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i>&nbsp; Logout</button>
+    </div>
+  </nav>
+
+  <div class="topbar">
+    <div class="brand"><img src="bmilogo.png" onerror="this.style.display='none'"><span>Fit<span class="grad">WithSubha</span></span></div>
+    <div class="icon-btn" onclick="doSignOut()"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+  </div>
+
+  <main class="page">
+
+    <div class="section-title" style="margin-bottom:14px;">
+      <span><i class="fa-solid fa-utensils" style="color:var(--brand-1);"></i>&nbsp; Nutrition Tracking</span>
+    </div>
+
+    <div class="grid grid-2">
+
+      <!-- CALORIE RING -->
+      <div class="card fade-in">
+        <div class="ring-lg" id="calRing" style="--pct:0">
+          <div class="ring-lg-inner">
+            <div class="num" id="calRemaining">—</div>
+            <div class="lbl">kcal left</div>
+          </div>
+        </div>
+        <div class="flex justify-between mt-16" style="font-size:12px;">
+          <div class="center"><div style="font-weight:700;" id="calTarget">—</div><div class="faint">Target</div></div>
+          <div class="center"><div style="font-weight:700;" id="calConsumed">0</div><div class="faint">Consumed</div></div>
+        </div>
+        <div class="macro-row">
+          <div class="macro-pill"><div class="val" id="proteinVal">0g</div><div class="lbl">Protein</div></div>
+          <div class="macro-pill"><div class="val" id="carbVal">0g</div><div class="lbl">Carbs</div></div>
+          <div class="macro-pill"><div class="val" id="fatVal">0g</div><div class="lbl">Fat</div></div>
+        </div>
+      </div>
+
+      <!-- HYDRATION -->
+      <div class="card fade-in">
+        <div class="section-title" style="margin-bottom:8px;"><span><i class="fa-solid fa-glass-water" style="color:#2575fc;"></i>&nbsp; Hydration</span></div>
+        <div class="muted" style="font-size:12px;">Goal: 8 glasses (2L) / day</div>
+        <div class="water-row" id="waterRow"></div>
+        <div class="progress-track mt-16"><div class="progress-fill thin" id="waterFill" style="width:0%;"></div></div>
+        <div class="faint mt-8" style="font-size:11.5px;" id="waterText">0 / 8 glasses</div>
+      </div>
+    </div>
+
+    <!-- ADD MEAL -->
+    <section class="mt-24">
+      <div class="section-title">Add Meal Entry</div>
+      <div class="card">
+        <div class="add-form">
+          <input type="text" id="mealName" placeholder="e.g. Grilled chicken bowl">
+          <input type="number" id="mealCal" placeholder="kcal">
+          <input type="number" id="mealProtein" placeholder="Protein g">
+          <input type="number" id="mealCarb" placeholder="Carbs g">
+          <button class="btn btn-primary btn-sm" onclick="addMeal()"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TODAY'S MEALS -->
+    <section class="mt-24">
+      <div class="section-title">Today's Meals</div>
+      <div id="mealsList" class="card"></div>
+    </section>
+
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <a class="bottomnav-link" href="dashboard.html"><i class="fa-solid fa-gauge-high"></i>Home</a>
+  <a class="bottomnav-link" href="plan.html"><i class="fa-solid fa-clipboard-list"></i>Plan</a>
+  <a class="bottomnav-link" href="progress.html"><i class="fa-solid fa-chart-line"></i>Progress</a>
+  <a class="bottomnav-link active" href="nutrition.html"><i class="fa-solid fa-utensils"></i>Food</a>
+  <a class="bottomnav-link" href="workouts.html"><i class="fa-solid fa-dumbbell"></i>Workout</a>
+  <a class="bottomnav-link" href="myjourney.html"><i class="fa-solid fa-shoe-prints"></i>Journey</a>
+</nav>
+
+<script>
+function soon(e){
+  e.preventDefault();
+  toast("This section is arriving in the next update ✨", "info");
+  return false;
+}
+</script>
+
+<script type="module">
+import { requireAuth, getLocalData, toast } from "./assets/fitcore.js";
+window.toast = toast;
+
+const todayKey = "nutrition_" + new Date().toDateString();
+
+function loadDay(){
+  try{
+    return JSON.parse(localStorage.getItem(todayKey)) || { meals: [], water: 0 };
+  } catch(e){
+    return { meals: [], water: 0 };
+  }
+}
+function saveDay(day){
+  localStorage.setItem(todayKey, JSON.stringify(day));
+}
+
+let day = loadDay();
+let calTarget = 2000;
+
+function render(){
+  const data = getLocalData();
+  calTarget = data.calories || 2000;
+
+  const consumed = day.meals.reduce((s,m) => s + (m.cal||0), 0);
+  const protein = day.meals.reduce((s,m) => s + (m.protein||0), 0);
+  const carbs = day.meals.reduce((s,m) => s + (m.carb||0), 0);
+  const fat = Math.round(consumed > 0 ? (consumed - protein*4 - carbs*4) / 9 : 0);
+  const remaining = Math.max(0, calTarget - consumed);
+  const pct = calTarget ? Math.min(100, Math.round((consumed/calTarget)*100)) : 0;
+
+  document.getElementById("calRing").style.setProperty("--pct", pct);
+  document.getElementById("calRemaining").innerText = remaining;
+  document.getElementById("calTarget").innerText = calTarget;
+  document.getElementById("calConsumed").innerText = consumed;
+  document.getElementById("proteinVal").innerText = protein + "g";
+  document.getElementById("carbVal").innerText = carbs + "g";
+  document.getElementById("fatVal").innerText = Math.max(0,fat) + "g";
+
+  // meals list
+  const list = document.getElementById("mealsList");
+  if(!day.meals.length){
+    list.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-bowl-food"></i>
+        <div class="empty-title">No meals logged yet</div>
+        <div class="empty-sub">Add your first meal above to start tracking today.</div>
+      </div>`;
+  } else {
+    list.innerHTML = day.meals.map((m,i) => `
+      <div class="meal-item">
+        <div class="meal-icon"><i class="fa-solid fa-utensils"></i></div>
+        <div style="flex:1;">
+          <div style="font-size:13.5px;font-weight:600;">${m.name}</div>
+          <div class="faint" style="font-size:11.5px;">${m.cal} kcal · P ${m.protein||0}g · C ${m.carb||0}g</div>
+        </div>
+        <div class="meal-delete" onclick="removeMeal(${i})"><i class="fa-solid fa-trash"></i></div>
+      </div>
+    `).join("");
+  }
+
+  // water
+  const waterRow = document.getElementById("waterRow");
+  waterRow.innerHTML = "";
+  for(let i=1;i<=8;i++){
+    const glass = document.createElement("div");
+    glass.className = "water-glass" + (i <= day.water ? " filled" : "");
+    glass.innerHTML = '<i class="fa-solid fa-glass-water"></i>';
+    glass.onclick = () => { day.water = (day.water === i) ? i-1 : i; saveDay(day); render(); };
+    waterRow.appendChild(glass);
+  }
+  document.getElementById("waterFill").style.width = Math.round((day.water/8)*100) + "%";
+  document.getElementById("waterText").innerText = `${day.water} / 8 glasses`;
+}
+
+window.addMeal = function(){
+  const name = document.getElementById("mealName").value.trim();
+  const cal = parseFloat(document.getElementById("mealCal").value);
+  const protein = parseFloat(document.getElementById("mealProtein").value) || 0;
+  const carb = parseFloat(document.getElementById("mealCarb").value) || 0;
+
+  if(!name || isNaN(cal)){
+    toast("Enter a meal name and calories", "error");
+    return;
+  }
+
+  day.meals.push({ name, cal, protein, carb, time: new Date().toISOString() });
+  saveDay(day);
+  render();
+  toast("Meal added ✅", "success");
+
+  document.getElementById("mealName").value = "";
+  document.getElementById("mealCal").value = "";
+  document.getElementById("mealProtein").value = "";
+  document.getElementById("mealCarb").value = "";
+};
+
+window.removeMeal = function(i){
+  day.meals.splice(i,1);
+  saveDay(day);
+  render();
+};
+
+(async () => {
+  await requireAuth();
+  render();
+})();
+</script>
+
+</body>
+</html>
